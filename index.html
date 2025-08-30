@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Gerador de Bilhetes</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      margin: 20px;
+    }
+    .container {
+      width: 320px; /* Ajustado pra impressora térmica */
+    }
+    .card {
+      border: 1px dashed black;
+      padding: 10px;
+      margin-bottom: 20px;
+      font-size: 12px;
+    }
+    .center {
+      text-align: center;
+      font-weight: bold;
+    }
+    hr {
+      border: none;
+      border-top: 1px dashed black;
+      margin: 5px 0;
+    }
+    textarea {
+      width: 100%;
+      height: 80px;
+    }
+    @media print {
+      body * { visibility: hidden; }
+      .print-area, .print-area * { visibility: visible; }
+      .print-area {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 58mm; /* largura padrão mini impressora */
+        border: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Gerador de Bilhete</h2>
+    <label>Nome do aluno:</label><br>
+    <input type="text" id="nome"><br><br>
+
+    <label>Turma:</label><br>
+    <input type="text" id="turma"><br><br>
+
+    <label>Observações:</label><br>
+    <textarea id="obs"></textarea><br><br>
+
+    <label>Data:</label><br>
+    <input type="date" id="data"><br><br>
+
+    <button onclick="gerarBilhete()">Gerar</button>
+    <button onclick="window.print()">Imprimir</button>
+
+    <div id="printArea" class="print-area" style="margin-top:20px; display:none;"></div>
+  </div>
+
+  <script>
+    function gerarBilhete() {
+      const nome = document.getElementById("nome").value;
+      const turma = document.getElementById("turma").value;
+      const obs = document.getElementById("obs").value;
+      const data = document.getElementById("data").value.split("-").reverse().join("/");
+
+      const conteudo = `
+        <div class="card">
+          <div class="center">E.M.E.B. VILA NOVA</div>
+          <div class="center">Rua Onze Horas, Rosa do Mar, Passo de Torres – SC</div>
+          <hr>
+          <b>Prof.:</b> Robinson Webber<br>
+          <b>Disc.:</b> Informática<br>
+          <hr>
+          Senhores pais e (ou) responsáveis, viemos através deste comunicar que o(a) aluno(a):<br><br>
+          <b>${nome}</b><br><br>
+          ${obs}<br><br>
+          <b>Turma:</b> ${turma}<br>
+          <b>Data:</b> ${data}<br><br>
+          _____________________<br>
+          Assinatura professor<br><br>
+          _____________________<br>
+          Assinatura responsável
+        </div>
+
+        <div class="card">
+          <div class="center">Comprovante de Entrega</div>
+          <hr>
+          <b>Aluno:</b> ${nome}<br>
+          <b>Data:</b> ${data}<br>
+          <b>Motivo:</b> ${obs}<br><br>
+          ___________________<br>
+          Assinatura aluno
+        </div>
+      `;
+
+      document.getElementById("printArea").innerHTML = conteudo;
+      document.getElementById("printArea").style.display = "block";
+    }
+  </script>
+</body>
+</html>
