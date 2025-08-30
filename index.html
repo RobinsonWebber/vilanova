@@ -11,13 +11,13 @@
       margin: 20px;
     }
     .container {
-      width: 320px; /* Ajustado pra impressora térmica */
+      width: 320px; /* área de edição */
     }
     .card {
       border: 1px dashed black;
       padding: 10px;
       margin-bottom: 20px;
-      font-size: 12px;
+      font-size: 13pt; /* fonte maior para leitura */
     }
     .center {
       text-align: center;
@@ -32,15 +32,29 @@
       width: 100%;
       height: 80px;
     }
+
+    /* ===== Ajuste de impressão para bobina ===== */
     @media print {
-      body * { visibility: hidden; }
-      .print-area, .print-area * { visibility: visible; }
+      @page {
+        size: 58mm auto;   /* largura da bobina, altura automática */
+        margin: 2mm;       /* pequena margem */
+      }
+
+      body * {
+        visibility: hidden;
+      }
+      .print-area, .print-area * {
+        visibility: visible;
+      }
       .print-area {
         position: absolute;
         top: 0;
         left: 0;
-        width: 58mm; /* largura padrão mini impressora */
-        border: none;
+        width: 100%;       /* ocupa toda a largura disponível */
+        font-size: 12pt;   /* texto legível na térmica */
+      }
+      .card {
+        border: none; /* opcional: remove borda ao imprimir */
       }
     }
   </style>
@@ -91,6 +105,8 @@
           _____________________<br>
           Assinatura responsável
         </div>
+
+        <hr style="border-top: 2px dashed black; margin: 10px 0;">
 
         <div class="card">
           <div class="center">Comprovante de Entrega</div>
