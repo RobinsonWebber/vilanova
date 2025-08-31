@@ -11,13 +11,14 @@
       margin: 20px;
     }
     .container {
-      width: 320px; /* área de edição */
+      width: 480px; /* área de edição */
     }
     .card {
       border: 1px dashed black;
       padding: 10px;
       margin-bottom: 20px;
       font-size: 16pt; /* fonte maior para leitura */
+      text-align: justify;
     }
     .center {
       text-align: center;
@@ -89,22 +90,22 @@
 
       const conteudo = `
         <div class="card">
-          <div align="center"><img src="https://robinsonwebber.github.io/vilanova/logo_definitivo_escola.jpg" alt="Descrição da imagem" width="130" height="164"> </div>
+          <div align="center"><img src="https://robinsonwebber.github.io/vilanova/logo_definitivo_escola.jpg" alt="Descrição da imagem" width="170" height="200"> </div>
           <div class="center">E.M.E.B. VILA NOVA</div>
           <div class="center">Rua Onze Horas, Rosa do Mar, Passo de Torres – SC</div>
-          <hr>
+          <hr style="border-top: 2px dashed black; margin: 10px 0;">      
           <b>Prof.:</b> Robinson Webber<br>
           <b>Disc.:</b> Informática<br>
-          <hr>
+          <hr style="border-top: 2px dashed black; margin: 10px 0;">
           Senhores pais e (ou) responsáveis, viemos através deste comunicar que o(a) aluno(a):<br><br>
-          <b>${nome}</b><br><br>
+          <b>${nome} - Turma: ${turma}</b> <br><br>
           ${obs}<br><br>
-          <b>Turma:</b> ${turma}<br>
           <b>Data:</b> ${data}<br><br>
           _____________________<br>
           Assinatura professor<br><br>
           _____________________<br>
           Assinatura responsável
+          <br><br>
         </div>
 
         <hr style="border-top: 2px dashed black; margin: 10px 0;">
@@ -112,11 +113,14 @@
         <div class="card">
           <div class="center">Comprovante de Entrega</div>
           <hr>
-          <b>Aluno:</b> ${nome}<br>
+          <b>Aluno:</b> ${nome} - <b>Turma:</b>${turma}<br>
           <b>Data:</b> ${data}<br>
-          <b>Motivo:</b> ${obs}<br><br>
-          ___________________<br>
-          Assinatura aluno
+          <b>Motivo:</b> ${obs}<br><br><br>
+          
+          <div class="center">______________________<br>Assinatura aluno</div>
+          <br><br>
+          <hr style="border-top: 2px dashed black; margin: 10px 0;">
+
         </div>
       `;
 
