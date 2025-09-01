@@ -2,207 +2,131 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Gerador de Bilhetes Completo</title>
+  <title>Gerador de Bilhetes</title>
   <style>
-    body { font-family: Arial, sans-serif; display: flex; justify-content: center; margin: 20px; }
-    .container { width: 480px; }
-    .card { border: 1px dashed black; padding: 10px; margin-bottom: 10px; font-size: 10pt; text-align: justify; }
-    .center { text-align: center; font-weight: bold; }
-    hr { border: none; border-top: 1px dashed black; margin: 5px 0; }
-    textarea { width: 100%; height: 60px; }
-    button { margin-right: 5px; margin-bottom: 10px; }
-    input { width: 100%; margin-bottom: 10px; }
-    /* Impressão térmica */
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      margin: 20px;
+    }
+    .container {
+      width: 480px; /* área de edição */
+    }
+    .card {
+      border: 1px dashed black;
+      padding: 10px;
+      margin-bottom: 20px;
+      font-size: 16pt; /* fonte maior para leitura */
+      text-align: justify;
+    }
+    .center {
+      text-align: center;
+      font-weight: bold;
+    }
+    hr {
+      border: none;
+      border-top: 1px dashed black;
+      margin: 5px 0;
+    }
+    textarea {
+      width: 100%;
+      height: 80px;
+    }
+
+    /* ===== Ajuste de impressão para bobina ===== */
     @media print {
-      @page { size: 58mm auto; margin: 2mm; }
-      body * { visibility: hidden; }
-      .print-area, .print-area * { visibility: visible; }
-      .print-area { position: absolute; top: 0; left: 0; width: 100%; font-size: 10pt; }
-      .card { border: none; page-break-inside: avoid; }
+      @page {
+        size: 58mm auto;   /* largura da bobina, altura automática */
+        margin: 2mm;       /* pequena margem */
+      }
+
+      body * {
+        visibility: hidden;
+      }
+      .print-area, .print-area * {
+        visibility: visible;
+      }
+      .print-area {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;       /* ocupa toda a largura disponível */
+        font-size: 12pt;   /* texto legível na térmica */
+      }
+      .card {
+        border: none; /* opcional: remove borda ao imprimir */
+      }
     }
   </style>
 </head>
 <body>
-<div class="container">
-  <h2>Gerador de Bilhetes Completo</h2>
+  <div class="container">
+    <h2>Gerador de Bilhete</h2>
+    <label>Nome do aluno:</label><br>
+    <input type="text" id="nome"><br><br>
 
-  <label>Nome do aluno:</label>
-  <input type="text" id="nome">
+    <label>Turma:</label><br>
+    <input type="text" id="turma"><br><br>
 
-  <label>Turma:</label>
-  <input type="text" id="turma">
+    <label>Observações:</label><br>
+    <textarea id="obs"></textarea><br><br>
 
-  <label>Observações:</label>
-  <textarea id="obs"></textarea>
+    <label>Data:</label><br>
+    <input type="date" id="data"><br><br>
 
-  <label>Data:</label>
-  <input type="date" id="data">
+    <button onclick="gerarBilhete()">Gerar</button>
+    <button onclick="window.print()">Imprimir</button>
 
-  <button onclick="gerarBilhete()">Adicionar Bilhete</button>
-  <button onclick="window.print()">Imprimir Todos</button>
-  <button onclick="limparBilhetes()">Limpar Todos</button>
+    <div id="printArea" class="print-area" style="margin-top:20px; display:none;"></div>
+  </div>
 
-  <hr>
-  <label>Buscar aluno:</label>
-  <input type="text" id="buscaNome" placeholder="Digite o nome">
-  <button onclick="buscarBilhete()">Buscar</button>
-  <button onclick="listarBilhetes()">Listar Todos</button>
+  <script>
+    function gerarBilhete() {
+      const nome = document.getElementById("nome").value;
+      const turma = document.getElementById("turma").value;
+      const obs = document.getElementById("obs").value;
+      const data = document.getElementById("data").value.split("-").reverse().join("/");
 
-  <div id="printArea" class="print-area" style="margin-top:20px;"></div>
-</div>
+      const conteudo = `
+        <div class="card">
+          <div align="center"><img src="https://robinsonwebber.github.io/vilanova/logo_definitivo_escola.jpg" alt="Descrição da imagem" width="170" height="200"> </div>
+          <div class="center">E.M.E.B. VILA NOVA</div>
+          <div class="center">Rua Onze Horas, Rosa do Mar, Passo de Torres – SC</div>
+          <hr style="border-top: 2px dashed black; margin: 10px 0;">      
+          <b>Prof.:</b> Robinson Webber<br>
+          <b>Disc.:</b> Informática<br>
+          <hr style="border-top: 2px dashed black; margin: 10px 0;">
+          Senhores pais e (ou) responsáveis, viemos através deste comunicar que o(a) aluno(a):<br><br>
+          <b>${nome} - Turma: ${turma}</b> <br><br>
+          ${obs}<br><br>
+          <b>Data:</b> ${data}<br><br>
+          _____________________<br>
+          Assinatura professor<br><br><br>
+          _____________________<br>
+          Assinatura responsável
+          <br><br>
+        </div>
 
-<script>
-// ---------- IndexedDB ----------
-let db;
-const request = indexedDB.open("BilhetesDB", 1);
+        <hr style="border-top: 2px dashed black; margin: 10px 0;">
 
-request.onupgradeneeded = event => {
-  db = event.target.result;
-  if(!db.objectStoreNames.contains("bilhetes")) {
-    db.createObjectStore("bilhetes", { keyPath: "id", autoIncrement: true });
-  }
-};
+        <div class="card">
+          <div class="center">Comprovante de Entrega</div>
+          <hr>
+          <b>Aluno:</b> ${nome} - <b>Turma:</b>${turma}<br>
+          <b>Data:</b> ${data}<br>
+          <b>Motivo:</b> ${obs}<br><br><br>
+          
+          <div class="center">______________________<br>Assinatura aluno</div>
+          <br><br>
+          <hr style="border-top: 2px dashed black; margin: 10px 0;">
 
-request.onsuccess = event => {
-  db = event.target.result;
-  listarBilhetes();
-};
+        </div>
+      `;
 
-request.onerror = event => console.error("Erro IndexedDB:", event.target.error);
-
-// ---------- Funções ----------
-
-// Adicionar bilhete
-function gerarBilhete() {
-  const nome = document.getElementById("nome").value.trim();
-  const turma = document.getElementById("turma").value.trim();
-  const obs = document.getElementById("obs").value.trim();
-  const data = document.getElementById("data").value.split("-").reverse().join("/");
-
-  if(!nome || !turma || !obs || !data) return alert("Preencha todos os campos!");
-
-  const transaction = db.transaction("bilhetes", "readwrite");
-  const store = transaction.objectStore("bilhetes");
-  store.add({ nome, turma, obs, data });
-
-  transaction.oncomplete = () => {
-    document.getElementById("nome").value = "";
-    document.getElementById("turma").value = "";
-    document.getElementById("obs").value = "";
-    document.getElementById("data").value = "";
-    listarBilhetes();
-  };
-}
-
-// Criar card de bilhete (reutilizável)
-function criarCardBilhete(b) {
-  const card = document.createElement("div");
-  card.className = "card";
-  card.innerHTML = `
-    <div class="center">
-      <img src="https://robinsonwebber.github.io/vilanova/logo_definitivo_escola.jpg" width="100" height="120">
-    </div>
-    <div class="center">E.M.E.B. VILA NOVA</div>
-    <div class="center">Rua Onze Horas, Rosa do Mar, Passo de Torres – SC</div>
-    <hr>
-    <b>Prof.:</b> Robinson Webber<br>
-    <b>Disc.:</b> Informática<br>
-    <hr>
-    Senhores pais e responsáveis, comunicamos que o(a) aluno(a):<br><br>
-    <b>${b.nome} - Turma: ${b.turma}</b><br><br>
-    ${b.obs}<br><br>
-    <b>Data:</b> ${b.data}<br><br>
-    <hr>
-    <div class="center">Comprovante de Entrega</div>
-    <hr>
-    <b>Aluno:</b> ${b.nome} - <b>Turma:</b> ${b.turma}<br>
-    <b>Data:</b> ${b.data}<br>
-    <b>Motivo:</b> ${b.obs}<br><br>
-    <div class="center">______________________<br>Assinatura aluno</div>
-    <br>
-    <button onclick="apagarBilhete(${b.id})">Apagar</button>
-    <button onclick="imprimirBilhete(${b.id})">Imprimir Individual</button>
-    <div style="border-top: 2px dashed black; margin: 10px 0;"></div>
-  `;
-  return card;
-}
-
-// Listar todos os bilhetes
-function listarBilhetes() {
-  const printArea = document.getElementById("printArea");
-  printArea.innerHTML = "";
-
-  const transaction = db.transaction("bilhetes", "readonly");
-  const store = transaction.objectStore("bilhetes");
-  const request = store.openCursor();
-
-  request.onsuccess = event => {
-    const cursor = event.target.result;
-    if(cursor) {
-      const card = criarCardBilhete(cursor.value);
-      printArea.appendChild(card);
-      cursor.continue();
+      document.getElementById("printArea").innerHTML = conteudo;
+      document.getElementById("printArea").style.display = "block";
     }
-  };
-}
-
-// Buscar bilhete pelo nome
-function buscarBilhete() {
-  const nomeBusca = document.getElementById("buscaNome").value.trim().toLowerCase();
-  const printArea = document.getElementById("printArea");
-  printArea.innerHTML = "";
-
-  if(!nomeBusca) return alert("Digite um nome para buscar!");
-
-  const transaction = db.transaction("bilhetes", "readonly");
-  const store = transaction.objectStore("bilhetes");
-  const request = store.openCursor();
-
-  request.onsuccess = event => {
-    const cursor = event.target.result;
-    if(cursor) {
-      const b = cursor.value;
-      if(b.nome.toLowerCase().includes(nomeBusca)) {
-        const card = criarCardBilhete(b);
-        printArea.appendChild(card);
-      }
-      cursor.continue();
-    }
-  };
-}
-
-// Apagar bilhete individual
-function apagarBilhete(id) {
-  const transaction = db.transaction("bilhetes", "readwrite");
-  const store = transaction.objectStore("bilhetes");
-  store.delete(id);
-  transaction.oncomplete = () => listarBilhetes();
-}
-
-// Limpar todos os bilhetes
-function limparBilhetes() {
-  const transaction = db.transaction("bilhetes", "readwrite");
-  const store = transaction.objectStore("bilhetes");
-  store.clear();
-  transaction.oncomplete = () => listarBilhetes();
-}
-
-// Imprimir bilhete individual
-function imprimirBilhete(id) {
-  const transaction = db.transaction("bilhetes", "readonly");
-  const store = transaction.objectStore("bilhetes");
-  const request = store.get(id);
-
-  request.onsuccess = event => {
-    const b = event.target.result;
-    if(b) {
-      const printArea = document.getElementById("printArea");
-      printArea.innerHTML = "";
-      printArea.appendChild(criarCardBilhete(b));
-      window.print();
-    }
-  };
-}
-</script>
+  </script>
 </body>
 </html>
