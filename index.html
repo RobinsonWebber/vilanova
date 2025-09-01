@@ -6,9 +6,27 @@
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    /* ================================================================== */
-    /* ESTILOS PARA A TELA (INCLUINDO DARK MODE )                          */
-    /* ================================================================== */
+    @media print {
+      @page {
+        size: 58mm auto;
+        margin: 2mm; /* margem mínima para respirar */
+      }
+      body * { visibility: hidden; }
+      .print-area, .print-area * { visibility: visible; }
+      .print-area {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: calc(100% - 4mm); /* compensa a margem */
+        margin: 0 auto; /* centraliza */
+        font-size: 14pt;
+        line-height: 1.4;
+      }
+      .card {
+        border: none;
+      }
+    }
+    /* Dark mode */
     body.dark-mode {
       background-color: #121212 !important;
       color: #e0e0e0 !important;
@@ -17,83 +35,14 @@
       background-color: #1e1e1e;
       color: #e0e0e0;
     }
-    body.dark-mode .form-control,
-    body.dark-mode .form-select {
+    body.dark-mode .form-control {
       background-color: #2a2a2a;
       color: #e0e0e0;
       border-color: #444;
     }
-    body.dark-mode .form-control:focus,
-    body.dark-mode .form-select:focus {
+    body.dark-mode .form-control:focus {
       background-color: #333;
       color: #fff;
-    }
-
-    /* ================================================================== */
-    /* ESTILOS OTIMIZADOS PARA IMPRESSÃO TÉRMICA (58mm)                   */
-    /* ================================================================== */
-    @media print {
-      /* --- 1. Configuração da Página --- */
-      @page {
-        size: 58mm auto;
-        margin: 2mm;
-      }
-
-      /* --- 2. Reset agressivo para anular Bootstrap --- */
-      body, html {
-        background-color: #fff !important;
-        width: 100%;
-      }
-
-      /* --- 3. Isola a área de impressão --- */
-      body * { visibility: hidden; }
-      .print-area, .print-area * { visibility: visible; }
-      .print-area {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-      }
-
-      /* --- 4. Força estilos de alto contraste --- */
-      .print-area * {
-        font-family: Arial, sans-serif !important;
-        color: #000000 !important;
-        font-weight: 600 !important;
-        font-size: 12pt !important;
-        line-height: 1.2 !important;
-        text-shadow: none !important;
-        background: transparent !important;
-      }
-
-      /* --- 5. Aumenta o peso de títulos e negritos --- */
-      .print-area b,
-      .print-area strong,
-      .print-area .titulo {
-        font-weight: 700 !important;
-      }
-
-      /* --- 6. Estilos para linhas e bordas --- */
-      .print-area .card { border: none !important; }
-      .print-area hr {
-        border: none !important;
-        border-top: 2px dashed #000000 !important;
-        margin: 8px 0 !important;
-        height: 1px;
-      }
-
-      /* --- 7. Garante que a imagem seja impressa corretamente --- */
-      .print-area img {
-        max-width: 100% !important;
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
-      }
-
-      /* --- 8. JUSTIFICA O TEXTO DA OBSERVAÇÃO --- */
-      .print-area .texto-obs {
-        text-align: justify !important;
-        text-justify: inter-word !important;
-      }
     }
   </style>
 </head>
@@ -102,34 +51,43 @@
   <div class="container py-4">
     <div class="row justify-content-center">
       <div class="col-md-6 col-lg-5">
+
         <div class="d-flex justify-content-between align-items-center mb-3">
           <h2 class="m-0">📜 Bilhetes</h2>
           <button class="btn btn-outline-secondary btn-sm" onclick="toggleDarkMode()">🌙</button>
         </div>
+
         <div class="card shadow p-4">
           <h4 class="text-center mb-4">Gerador de Bilhete</h4>
+
           <div class="mb-3">
             <label class="form-label">Nome do aluno</label>
             <input type="text" id="nome" class="form-control">
           </div>
+
           <div class="mb-3">
             <label class="form-label">Turma</label>
             <input type="text" id="turma" class="form-control">
           </div>
+
           <div class="mb-3">
             <label class="form-label">Observações</label>
             <textarea id="obs" class="form-control" rows="3"></textarea>
           </div>
+
           <div class="mb-3">
             <label class="form-label">Data</label>
             <input type="date" id="data" class="form-control">
           </div>
+
           <div class="d-grid gap-2">
             <button onclick="gerarBilhete()" class="btn btn-primary">Gerar Bilhete</button>
             <button onclick="window.print()" class="btn btn-success">Imprimir</button>
           </div>
         </div>
+
         <div id="printArea" class="print-area mt-4" style="display:none;"></div>
+
       </div>
     </div>
   </div>
@@ -138,71 +96,43 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
   <script>
-    function gerarBilhete( ) {
+    function gerarBilhete() {
       const nome = document.getElementById("nome").value;
       const turma = document.getElementById("turma").value;
       const obs = document.getElementById("obs").value;
       const dataInput = document.getElementById("data").value;
       const data = dataInput ? dataInput.split("-").reverse().join("/") : "";
 
-      // AJUSTE: A tag <h1> foi fechada corretamente e as linhas <p> foram trocadas por <hr>
-      // AJUSTE: A variável ${obs} foi envolvida em uma <div> com a classe "texto-obs"
       const conteudo = `
         <div>
-          <div style="text-align: center;">
-            <img src="https://robinsonwebber.github.io/vilanova/logo_definitivo_escola.jpg" alt="Logo da Escola" width="130" height="160">
-          </div>
-          <div class="text-center titulo" style="font-size: 14pt !important;">E.M.E.B. VILA NOVA</div>
-          <div class="text-center" style="font-size: 10pt !important;">Rua Onze Horas, Rosa do Mar, Passo de Torres – SC</div>
+          <div class="text-center fw-bold">E.M.E.B. VILA NOVA</div>
+          <div class="text-center">Rua Onze Horas, Rosa do Mar, Passo de Torres – SC</div>
           <hr>
-          <b>Prof.:</b> Robinson Webber  
-
-          <b>Disc.:</b> Informática  
-
+          <b>Prof.:</b> Robinson Webber<br>
+          <b>Disc.:</b> Informática<br>
           <hr>
-          Senhores pais e/ou responsáveis, viemos através deste comunicar que o(a ) aluno(a):  
-          
-          <hr>
-
-          <span class="titulo">${nome} - Turma: ${turma}</span>  
-  
-
-          
-          <!-- AQUI ESTÁ O AJUSTE PRINCIPAL -->
-          <div class="texto-obs">${obs}</div>  
-
-          <br>
-          <b>Data:</b> ${data}  
-          <br><br>
-  
-
-          _____________________  
-
-          Assinatura professor  
-          <br><br>
-
-          _____________________  
-
+          Senhores pais e (ou) responsáveis, viemos através deste comunicar que o(a) aluno(a):<br><br>
+          <b>${nome}</b><br><br>
+          ${obs}<br><br>
+          <b>Turma:</b> ${turma}<br>
+          <b>Data:</b> ${data}<br><br>
+          _____________________<br>
+          Assinatura professor<br><br>
+          _____________________<br>
           Assinatura responsável
         </div>
-        <br><br>
-       
-        <hr style="margin: 20px 0;">
+
+        <hr style="border-top: 2px dashed black; margin: 10px 0;">
 
         <div>
-          <div class="text-center titulo">Comprovante de Entrega</div>
+          <div class="text-center fw-bold">Comprovante de Entrega</div>
           <hr>
-          <b>Aluno:</b> ${nome} - Turma: ${turma}  
-
-          <b>Data:</b> ${data}  
-
-          <b>Motivo:</b> <div class="texto-obs" style="display: inline;">${obs}</div>  
-          <br><br>
-
-          ___________________  
-
+          <b>Aluno:</b> ${nome}<br>
+          <b>Data:</b> ${data}<br>
+          <b>Motivo:</b> ${obs}<br><br>
+          ___________________<br>
           Assinatura aluno
-        </div><br><br>
+        </div>
       `;
 
       document.getElementById("printArea").innerHTML = conteudo;
