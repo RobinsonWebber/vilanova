@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bilhetes — Simples e Funcional</title>
+  <style>
+    :root{
+      --bg: #0b1020;
+      --card: #121a2b;
+      --muted: #97a3b6;
+      --text: #eaf0ff;
+      --accent: #6ea8ff;
+      --accent-2: #60d394;
+      --danger: #ff6b6b;
+      --border: #22314e;
+      --shadow: 0 8px 28px rgba(0,0,0,.35);
+      --radius: 16px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background:
+        radial-gradient(1200px 600px at 80% -10%, #1b2a52 0%, transparent 60%),
+        radial-gradient(800px 400px at -10% 10%, #0f2344 0%, transparent 60%),
+        linear-gradient(180deg, #0b1020, #0b1020);
+      color:var(--text);
+    }
+    .wrap{max-width:960px;margin:24px auto;padding:16px}
+
+    .app{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    .header{
+      padding:20px 16px 12px 16px;
+      display:flex;flex-direction:column;gap:8px;
+      border-bottom:1px solid var(--border);
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+    }
+    .title{font-size:20px;font-weight:700;letter-spacing:.2px}
+    .subtitle{font-size:13px;color:var(--muted)}
+
+    /* Busca abaixo do título (mobile-first) */
+    .search-row{padding:0 16px 16px 16px}
+    .input{
+      width:100%;
+      background:#0f1525; color:var(--text);
+      border:1px solid var(--border);
+      border-radius:12px; padding:12px 14px; outline:none;
+    }
+    .input::placeholder{color:#7f8aa3}
+
+    .content{display:grid; gap:12px; padding:12px;}
+    @media (min-width: 860px){
+      .content{grid-template-columns: 420px 1fr}
+    }
+
+    /* Form */
+    .card{background:#0f1525;border:1px solid var(--border);border-radius:12px;padding:14px}
+    .card h2{margin:0 0 8px 0;font-size:16px}
+    .grid{display:grid; gap:10px}
+    .grid.two{grid-template-columns: 1fr 1fr}
+    label{font-size:12px;color:var(--muted)}
+    .field{display:flex;flex-direction:column;gap:6px}
+    textarea.input{min-height:90px;resize:vertical}
+
+    .row-actions{display:flex;gap:8px;flex-wrap:wrap}
+    button{
+      border:1px solid var(--border);
+      background:#121a2b; color:var(--text);
+      padding:10px 14px; border-radius:12px; cursor:pointer;
+    }
+    button.primary{background:var(--accent);border-color:transparent;color:#0a1630;font-weight:700}
+    button.ghost{background:transparent}
+    button.danger{background:transparent;border-color:#423040;color:#ff9a9a}
+    button:disabled{opacity:.65;cursor:not-allowed}
+
+    /* Lista */
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:10px;border-bottom:1px solid var(--border);text-align:left}
+    th{font-size:12px;color:var(--muted);font-weight:600}
+    td{font-size:14px;vertical-align:top}
+
+    .empty{color:var(--muted);font-size:14px;padding:14px}
+
+    .badge{display:inline-block;padding:3px 8px;border:1px solid var(--border);border-radius:999px;font-size:12px;color:var(--muted)}
+
+    /* Impressão (bobina 58mm / RawBT) */
+    @media print{
+      body{background:white}
+      .wrap, .app{box-shadow:none;border:none}
+    }
+
+    /* Ticket imprimível */
+    .ticket{width: 240px; /* ~58mm @ 203dpi */
+      font-family: Arial, sans-serif; color:#000; background:#fff; padding:6px}
+    .ticket h1{font-size:18px;margin:0 0 6px 0;text-align:center}
+    .ticket .line{border-top:1px dashed #000;margin:6px 0}
+    .ticket .row{margin:4px 0;font-size:14px}
+    .ticket .muted{font-size:12px;color:#333}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="app" id="app">
+      <div class="header">
+        <div class="title">Gerador de Bilhetes</div>
+        <div class="subtitle">Visual moderno, simples e funcional — com histórico e busca.</div>
+      </div>
+
+      <div class="search-row">
+        <input id="q" class="input" type="search" placeholder="Buscar por aluno, turma, motivo ou #id…" />
+      </div>
+
+      <div class="content">
+        <!-- Formulário -->
+        <div class="card">
+          <h2>Novo bilhete</h2>
+          <div class="grid">
+            <div class="field">
+              <label>Aluno</label>
+              <input id="aluno" class="input" autocomplete="off" />
+            </div>
+            <div class="field">
+              <label>Turma</label>
+              <input id="turma" class="input" autocomplete="off" />
+            </div>
+            <div class="field">
+              <label>Motivo</label>
+              <textarea id="motivo" class="input" placeholder="Descreva o bilhete…"></textarea>
+            </div>
+            <div class="grid two">
+              <div class="field">
+                <label>Data</label>
+                <input id="data" class="input" type="date" />
+              </div>
+              <div class="field">
+                <label>ID (automático)</label>
+                <div class="badge" id="nextId">#1</div>
+              </div>
+            </div>
+          </div>
+          <div class="row-actions" style="margin-top:10px">
+            <button class="primary" id="btnSalvar">Salvar bilhete</button>
+            <button class="ghost" id="btnLimpar">Limpar</button>
+            <button class="ghost" id="btnExportar">Exportar JSON</button>
+            <button class="ghost" id="btnImportar">Importar JSON</button>
+          </div>
+        </div>
+
+        <!-- Lista / Histórico -->
+        <div class="card">
+          <h2 style="margin-bottom:8px">Histórico</h2>
+          <div id="listaWrap">
+            <table id="tabela">
+              <thead>
+                <tr>
+                  <th>#ID</th>
+                  <th>Aluno</th>
+                  <th>Turma</th>
+                  <th>Motivo</th>
+                  <th>Data</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="tbody"></tbody>
+            </table>
+            <div id="vazio" class="empty" style="display:none">Nenhum bilhete ainda.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <input type="file" id="fileImport" accept="application/json" style="display:none" />
+
+  <script>
+    const $ = (sel)=>document.querySelector(sel);
+    const aluno = $('#aluno');
+    const turma = $('#turma');
+    const motivo = $('#motivo');
+    const dataEl = $('#data');
+    const nextIdEl = $('#nextId');
+    const tbody = $('#tbody');
+    const vazio = $('#vazio');
+    const q = $('#q');
+
+    const KEY = 'bilhetes.v1';
+    const state = { items: [], q: '' };
+
+    const API = {
+      BASE: 'https://script.google.com/macros/s/AKfycbxn6MdkCUHldZY-GHCVNm9h0IeEDIfEJliEsU55gmYhmqJHHzYh2Pjr2cQ3qhz_x0ji/exec',
+      async list(q=''){
+        const url = `${API.BASE}?action=list&q=${encodeURIComponent(q)}`;
+        const r = await fetch(url, { method:'GET' });
+        if(!r.ok) throw new Error('Falha ao listar');
+        const j = await r.json();
+        if(j.ok) return j.items; else throw new Error(j.error||'Erro desconhecido');
+      },
+      async create(item){
+        const r = await fetch(API.BASE, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({action:'create', ...item}) });
+        if(!r.ok) throw new Error('Falha ao salvar');
+        const j = await r.json();
+        if(j.ok) return j.item; else throw new Error(j.error||'Erro ao criar');
+      },
+      async del(id){
+        const r = await fetch(API.BASE, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({action:'delete', id}) });
+        if(!r.ok) throw new Error('Falha ao excluir');
+        const j = await r.json(); if(j.ok) return true; else throw new Error(j.error||'Erro ao excluir');
+      },
+      async update(item){
+        const r = await fetch(API.BASE, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({action:'update', ...item}) });
+        if(!r.ok) throw new Error('Falha ao atualizar');
+        const j = await r.json(); if(j.ok) return true; else throw new Error(j.error||'Erro ao atualizar');
+      }
+    };
+
+    // Inicializa data de hoje
+    dataEl.valueAsNumber = Date.now() - (new Date()).getTimezoneOffset()*60000;
+
+    // Cache local (fallback offline)
+    function cacheSet(items){ localStorage.setItem(KEY, JSON.stringify(items)); }
+    function cacheGet(){ try{ return JSON.parse(localStorage.getItem(KEY)||'[]'); }catch{ return []; } }
+
+    async function load(){
+      try{
+        state.items = await API.list(state.q);
+        cacheSet(state.items);
+      }catch(e){
+        state.items = cacheGet();
+      }
+      render();
+    }
+
+    function nextId(){
+      const max = state.items.reduce((m,o)=>Math.max(m,o.id), 0);
+      return max + 1;
+    }
+
+    function clearForm(){
+      aluno.value = '';
+      turma.value = '';
+      motivo.value = '';
+      dataEl.valueAsNumber = Date.now() - (new Date()).getTimezoneOffset()*60000;
+      nextIdEl.textContent = '#' + nextId();
+      aluno.focus();
+    }
+
+    async function create(){
+      const item = {
+        aluno: aluno.value.trim(),
+        turma: turma.value.trim(),
+        motivo: motivo.value.trim(),
+        data: dataEl.value || new Date().toISOString().slice(0,10)
+      };
+      if(!item.aluno || !item.motivo){
+        alert('Preencha ao menos Aluno e Motivo.');
+        return;
+      }
+      try{
+        const created = await API.create(item);
+        state.items.unshift(created);
+        cacheSet(state.items);
+        render();
+        clearForm();
+      }catch(err){ alert(err.message); }
+    }
+
+    async function remove(id){
+      if(!confirm('Excluir bilhete #' + id + '?')) return;
+      try{
+        await API.del(id);
+        state.items = state.items.filter(x=>x.id !== id);
+        cacheSet(state.items);
+        render();
+      }catch(err){ alert(err.message); }
+    }
+
+    async function edit(id){
+      const it = state.items.find(x=>x.id===id);
+      if(!it) return;
+      aluno.value = it.aluno; turma.value = it.turma; motivo.value = it.motivo; dataEl.value = it.data;
+      // (Opcional) comportamento atual: remover e recriar; podemos trocar por update real depois
+      await remove(id);
+      nextIdEl.textContent = '#' + nextId();
+      aluno.focus();
+    }
+
+    function printTicket(item){
+      const closeScript = '</' + 'script>';
+      const html = `<!DOCTYPE html><html><head><meta charset="utf-8">
+        <title>Bilhete #${item.id}</title>
+        <style>
+          @page{ size: 58mm auto; margin: 3mm }
+          body{ margin:0; }
+          .ticket{ width: 240px; font-family: Arial, sans-serif; color:#000; background:#fff; padding:6px }
+          .ticket h1{ font-size:18px; margin:0 0 6px 0; text-align:center }
+          .ticket .line{ border-top:1px dashed #000; margin:6px 0 }
+          .ticket .row{ margin:4px 0; font-size:14px; line-height:1.25 }
+          .muted{ font-size:12px; color:#333 }
+        </style></head><body>
+        <div class="ticket">
+          <h1>Bilhete</h1>
+          <div class="line"></div>
+          <div class="row"><strong>ID:</strong> #${item.id}</div>
+          <div class="row"><strong>Aluno:</strong> ${escapeHtml(item.aluno)}</div>
+          <div class="row"><strong>Turma:</strong> ${escapeHtml(item.turma||'-')}</div>
+          <div class="row"><strong>Data:</strong> ${item.data}</div>
+          <div class="line"></div>
+          <div class="row"><strong>Motivo:</strong><br>${breakLines(escapeHtml(item.motivo))}</div>
+          <div class="line"></div>
+          <div class="row muted">Gerado em: ${new Date().toLocaleString()}</div>
+        </div>
+        <script>window.onload=()=>window.print()${closeScript}
+      </body></html>`;
+      const w = window.open('', '_blank', 'width=380,height=600');
+      w.document.write(html);
+      w.document.close();
+    }
+
+    function escapeHtml(s){
+      return (s||'').replace(/[&<>"']/g, (c)=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+    }
+    function breakLines(s){
+      return String(s).replace(/\n/g,'<br>');
+    }
+
+    function render(){
+      nextIdEl.textContent = '#' + nextId();
+      const rows = filtered().map(it=>{
+        return `<tr>
+          <td>#${it.id}</td>
+          <td>${escapeHtml(it.aluno)}</td>
+          <td>${escapeHtml(it.turma||'-')}</td>
+          <td>${escapeHtml(it.motivo)}</td>
+          <td>${it.data}</td>
+          <td>
+            <div class="row-actions">
+              <button onclick="printTicket(${it.id})">Imprimir</button>
+              <button onclick="edit(${it.id})">Editar</button>
+              <button class="danger" onclick="remove(${it.id})">Excluir</button>
+            </div>
+          </td>
+        </tr>`
+      }).join('');
+      tbody.innerHTML = rows;
+      vazio.style.display = state.items.length ? 'none' : 'block';
+    }
+
+    function filtered(){
+      const qv = state.q.trim().toLowerCase();
+      if(!qv) return state.items;
+      return state.items.filter(it=>
+        String(it.id).includes(qv) ||
+        (it.aluno||'').toLowerCase().includes(qv) ||
+        (it.turma||'').toLowerCase().includes(qv) ||
+        (it.motivo||'').toLowerCase().includes(qv)
+      );
+    }
+
+    // Exportar / Importar mantidos (servem como backup)
+    function exportJson(){
+      const blob = new Blob([JSON.stringify(state.items, null, 2)], {type:'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'bilhetes.json'; a.click();
+      URL.revokeObjectURL(url);
+    }
+    function importJson(files){
+      const f = files?.[0]; if(!f) return;
+      const reader = new FileReader();
+      reader.onload = async e=>{
+        try{
+          const arr = JSON.parse(String(e.target.result||'[]'));
+          if(!Array.isArray(arr)) throw new Error('Formato inválido');
+          // importa criando no servidor um por um
+          for(const x of arr){
+            if(x && x.aluno && x.motivo){
+              await API.create({aluno:x.aluno, turma:x.turma||'', motivo:x.motivo, data:x.data});
+            }
+          }
+          state.items = await API.list(state.q);
+          cacheSet(state.items);
+          render();
+        }catch(err){ alert('Não foi possível importar: '+ err.message); }
+      };
+      reader.readAsText(f);
+    }
+
+    // Eventos
+    $('#btnSalvar').addEventListener('click', create);
+    $('#btnLimpar').addEventListener('click', clearForm);
+    $('#btnExportar').addEventListener('click', exportJson);
+    $('#btnImportar').addEventListener('click', ()=>$('#fileImport').click());
+    $('#fileImport').addEventListener('change', (e)=>importJson(e.target.files));
+    q.addEventListener('input', async ()=>{ state.q = q.value; await load(); });
+
+    // Start
+    load();
+    clearForm();
+  </script>
+</body>
+
+<!-- =========================
+  INTEGRAÇÃO COM GOOGLE SHEETS
+  =========================
+  1) Crie um Apps Script e cole o código abaixo (Code.gs).
+  2) Substitua SPREADSHEET_ID pela sua Planilha.
+  3) Publique como Web App (Implantar > Implementar como aplicativo da web)
+     - Quem tem acesso: Qualquer pessoa com o link (ou restrito ao seu domínio, se preferir)
+     - Copie a URL da implantação e cole aqui no index no lugar de https://script.google.com/macros/s/AKfycbyN6ioQdpebtd1jxBx0D2wVZYNpBaclHCMfGUNuoexZ5B18575yTbPUi0RCFP14_zga/exec
+-->
+
+<!-- Code.gs (Google Apps Script) -->
+<!--
+const SHEET_ID = 'SPREADSHEET_ID';
+const SHEET_NAME = 'Página1'; // ajuste para o nome da sua aba
+
+function _sheet(){
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  return ss.getSheetByName(SHEET_NAME);
+}
+
+function doGet(e){
+  const action = (e.parameter.action||'list').toLowerCase();
+  enableCors_();
+  if(action==='list'){
+    const q = (e.parameter.q||'').toLowerCase();
+    const sh = _sheet();
+    const values = sh.getDataRange().getValues();
+    const header = values.shift();
+    const idx = Object.fromEntries(header.map((h,i)=>[String(h).toLowerCase(), i]));
+    const rows = values
+      .filter(r => r.some(c => String(c).toLowerCase().includes(q)))
+      .map(r => ({
+        id: Number(r[idx['id']]),
+        aluno: String(r[idx['aluno']]||''),
+        turma: String(r[idx['turma']]||''),
+        motivo: String(r[idx['motivo']]||''),
+        data: Utilities.formatDate(new Date(r[idx['data']]), Session.getScriptTimeZone(), 'yyyy-MM-dd')
+      }))
+      .sort((a,b)=>b.id-a.id);
+    return json_({ok:true, items: rows});
+  }
+  return json_({ok:false, error:'Unsupported action'});
+}
+
+function doPost(e){
+  enableCors_();
+  const body = e.postData && e.postData.contents ? JSON.parse(e.postData.contents) : {};
+  const action = (body.action||'').toLowerCase();
+  const sh = _sheet();
+
+  if(action==='create'){
+    const {aluno, turma, motivo, data} = body;
+    if(!aluno || !motivo) return json_({ok:false, error:'Aluno e Motivo são obrigatórios.'});
+    const id = nextId_(sh);
+    sh.appendRow([id, aluno, turma||'', motivo||'', data||Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd')]);
+    return json_({ok:true, item:{id, aluno, turma:turma||'', motivo:motivo||'', data}});
+  }
+
+  if(action==='delete'){
+    const {id} = body;
+    if(!id) return json_({ok:false, error:'ID obrigatório.'});
+    const range = sh.getDataRange();
+    const values = range.getValues();
+    const header = values.shift();
+    const idx = Object.fromEntries(header.map((h,i)=>[String(h).toLowerCase(), i]));
+    for(let r=0; r<values.length; r++){
+      if(Number(values[r][idx['id']])===Number(id)){
+        sh.deleteRow(r+2); // +1 header, +1 base 1
+        return json_({ok:true});
+      }
+    }
+    return json_({ok:false, error:'ID não encontrado.'});
+  }
+
+  if(action==='update'){
+    const {id, aluno, turma, motivo, data} = body;
+    if(!id) return json_({ok:false, error:'ID obrigatório.'});
+    const range = sh.getDataRange();
+    const values = range.getValues();
+    const header = values.shift();
+    const idx = Object.fromEntries(header.map((h,i)=>[String(h).toLowerCase(), i]));
+    for(let r=0; r<values.length; r++){
+      if(Number(values[r][idx['id']])===Number(id)){
+        if(aluno!==undefined) values[r][idx['aluno']] = aluno;
+        if(turma!==undefined) values[r][idx['turma']] = turma;
+        if(motivo!==undefined) values[r][idx['motivo']] = motivo;
+        if(data!==undefined) values[r][idx['data']] = data;
+        sh.getRange(r+2, 1, 1, values[0].length).setValues([values[r]]);
+        return json_({ok:true});
+      }
+    }
+    return json_({ok:false, error:'ID não encontrado.'});
+  }
+
+  return json_({ok:false, error:'Unsupported action'});
+}
+
+function nextId_(sh){
+  const lastRow = sh.getLastRow();
+  if(lastRow < 2) return 1; // só cabeçalho
+  const idCol = sh.getRange(2,1, lastRow-1, 1).getValues().flat().map(Number);
+  return Math.max(...idCol)+1;
+}
+
+function json_(obj){
+  const out = ContentService.createTextOutput(JSON.stringify(obj));
+  out.setMimeType(ContentService.MimeType.JSON);
+  return out;
+}
+
+function enableCors_(){
+  const resp = HtmlService.createHtmlOutput('')
+    .addMetaTag('Access-Control-Allow-Origin','*')
+    .addMetaTag('Access-Control-Allow-Methods','GET, POST, OPTIONS')
+    .addMetaTag('Access-Control-Allow-Headers','Content-Type');
+  return resp;
+}
+
+function doOptions(){
+  return ContentService.createTextOutput('').setMimeType(ContentService.MimeType.TEXT);
+}
+-->
+
+<!--
+IMPORTANTE — Cabeçalho da planilha deve ser exatamente:
+  id | aluno | turma | motivo | data
+-->
+
+</html>
