@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gerador de Bilhetes - Versão Melhorada</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start; /* Alinhar ao topo */
+      padding: 20px;
+    }
+
+    .main-container {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+      overflow: hidden;
+      max-width: 800px;
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    .form-section {
+      padding: 40px;
+      background: #f8f9fa;
+    }
+
+    .preview-section {
+      padding: 40px;
+      background: white;
+      display: none;
+    }
+
+    h2 {
+      color: #2c3e50;
+      margin-bottom: 30px;
+      font-size: 28px;
+      text-align: center;
+    }
+    h3 {
+      color: #2c3e50;
+      margin-bottom: 30px;
+      font-size: 24px;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #495057;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    textarea {
+      height: 100px;
+      resize: vertical;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 12px;
+      margin-top: 30px;
+    }
+
+    button {
+      flex: 1;
+      padding: 14px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-secondary {
+      background: #6c757d;
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background: #5a6268;
+      transform: translateY(-2px);
+    }
+
+    .btn-success {
+      background: #28a745;
+      color: white;
+    }
+
+    .btn-success:hover {
+      background: #218838;
+      transform: translateY(-2px);
+    }
+
+    .btn-danger {
+      background: #dc3545;
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #c82333;
+      transform: translateY(-2px);
+    }
+
+    .card {
+      border: 2px dashed #6c757d;
+      padding: 20px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      text-align: justify;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .center {
+      text-align: center;
+      font-weight: bold;
+    }
+
+    hr {
+      border: none;
+      border-top: 2px dashed #6c757d;
+      margin: 10px 0;
+    }
+
+    .preview-title {
+      color: #2c3e50;
+      margin-bottom: 20px;
+      font-size: 24px;
+      text-align: center;
+    }
+
+    .alert {
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-weight: 500;
+      display: none;
+    }
+
+    .alert-success {
+      background-color: #d4edda;
+      border: 1px solid #c3e6cb;
+      color: #155724;
+    }
+
+    .alert-error {
+      background-color: #f8d7da;
+      border: 1px solid #f5c6cb;
+      color: #721c24;
+    }
+
+    .form-validation {
+      border-color: #dc3545 !important;
+      box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1) !important;
+    }
+
+    .validation-message {
+      color: #dc3545;
+      font-size: 12px;
+      margin-top: 4px;
+      display: none;
+    }
+
+    .fade-in {
+      animation: fadeIn 0.5s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Responsividade */
+    @media (max-width: 768px) {
+      .form-section, .preview-section {
+        padding: 20px;
+      }
+      
+      .button-group {
+        flex-direction: column;
+      }
+    }
+
+    /* Ocultar printArea na tela */
+    .print-area {
+      display: none;
+    }
+
+    /* Estilos de impressão */
+    @media print {
+      @page {
+        size: 58mm auto;
+        margin: 0mm;
+      }
+
+      body * {
+        visibility: hidden;
+      }
+      .print-area, .print-area * {
+        visibility: visible;
+      }
+      .print-area {
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        font-size: 16pt;
+      }
+      .card {
+        border: none;
+        box-shadow: none;
+        font-size: 16pt;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="main-container">
+    <div class="form-section">
+      <h2>📝 Gerador de Bilhetes</h2>
+      <h3>
+        Prof. Carine Rosa
+      </h3>
+      
+      <div class="alert alert-success" id="successAlert">
+        ✅ Bilhete gerado com sucesso!
+      </div>
+      
+      <div class="alert alert-error" id="errorAlert">
+        ❌ Por favor, preencha todos os campos obrigatórios.
+      </div>
+
+      <form id="bilheteForm">
+        <div class="form-group">
+          <label for="nome">Nome do aluno *</label>
+          <input type="text" id="nome" required>
+          <div class="validation-message" id="nomeError">Nome é obrigatório</div>
+        </div>
+
+        <div class="form-group">
+          <label for="turma">Turma *</label>
+          <input type="text" id="turma" required>
+          <div class="validation-message" id="turmaError">Turma é obrigatória</div>
+        </div>
+
+        <div class="form-group">
+          <label for="obs">Observações</label>
+          <textarea id="obs" placeholder="Descreva o motivo do bilhete..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="data">Data</label>
+          <input type="date" id="data">
+        </div>
+
+        <div class="button-group">
+          <button type="button" class="btn-primary" onclick="gerarBilhete()">
+            📄 Gerar Bilhete
+          </button>
+          <button type="button" class="btn-success" onclick="window.print()" id="printBtn" disabled>
+            🖨️ Imprimir
+          </button>
+          <button type="button" class="btn-danger" onclick="limparFormulario()">
+            🗑️ Limpar
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="preview-section" id="previewSection">
+      <h3 class="preview-title">👀 Visualização</h3>
+      <div id="previewArea"></div>
+    </div>
+  </div>
+
+  <!-- Área de impressão -->
+  <div id="printArea" class="print-area"></div>
+
+  <script>
+    document.getElementById('data').valueAsDate = new Date();
+
+    function validarFormulario() {
+      const nome = document.getElementById('nome').value.trim();
+      const turma = document.getElementById('turma').value.trim();
+      let isValid = true;
+
+      document.getElementById('nome').classList.remove('form-validation');
+      document.getElementById('turma').classList.remove('form-validation');
+      document.getElementById('nomeError').style.display = 'none';
+      document.getElementById('turmaError').style.display = 'none';
+
+      if (!nome) {
+        document.getElementById('nome').classList.add('form-validation');
+        document.getElementById('nomeError').style.display = 'block';
+        isValid = false;
+      }
+
+      if (!turma) {
+        document.getElementById('turma').classList.add('form-validation');
+        document.getElementById('turmaError').style.display = 'block';
+        isValid = false;
+      }
+
+      return isValid;
+    }
+
+    function mostrarAlerta(tipo, mostrar = true) {
+      const successAlert = document.getElementById('successAlert');
+      const errorAlert = document.getElementById('errorAlert');
+      
+      successAlert.style.display = 'none';
+      errorAlert.style.display = 'none';
+      
+      if (mostrar) {
+        if (tipo === 'success') {
+          successAlert.style.display = 'block';
+          setTimeout(() => successAlert.style.display = 'none', 3000);
+        } else if (tipo === 'error') {
+          errorAlert.style.display = 'block';
+          setTimeout(() => errorAlert.style.display = 'none', 3000);
+        }
+      }
+    }
+
+    function gerarBilhete() {
+      if (!validarFormulario()) {
+        mostrarAlerta('error');
+        return;
+      }
+
+      const nome = document.getElementById("nome").value.trim();
+      const turma = document.getElementById("turma").value.trim();
+      const obs = document.getElementById("obs").value.trim() || "Comunicado geral";
+      const dataInput = document.getElementById("data").value;
+      const data = dataInput ? new Date(dataInput + 'T00:00:00').toLocaleDateString('pt-BR') : new Date().toLocaleDateString('pt-BR');
+
+      const conteudo = gerarConteudoBilhete(nome, turma, obs, data);
+
+      document.getElementById("previewArea").innerHTML = conteudo;
+      document.getElementById("printArea").innerHTML = conteudo;
+      
+      const previewSection = document.getElementById("previewSection");
+      previewSection.style.display = "block";
+      previewSection.classList.add('fade-in');
+      
+      document.getElementById("printBtn").disabled = false;
+      
+      mostrarAlerta('success');
+    }
+
+    function gerarConteudoBilhete(nome, turma, obs, data) {
+      return `
+        <div class="card">
+          <div align="center">
+            <img src="https://robinsonwebber.github.io/vilanova/logo_definitivo_escola.jpg" 
+                 alt="Logo da Escola" width="130" height="160" 
+                 style="max-width: 100%; height: auto;">
+          </div>
+          <div class="center"><h3>E.M.E.B. VILA NOVA</h3></div>
+          <div class="center">Rua Onze Horas, Rosa do Mar, Passo de Torres – SC</div>
+          <hr style="border-top: 2px dashed black; margin: 10px 0;">      
+          <b>Prof.:</b> Carine Rosa<br>
+          <b>Disc.:</b> Arte<br>
+          <hr style="border-top: 2px dashed black; margin: 10px 0;">
+          Senhores pais e (ou) responsáveis, viemos através deste comunicar que o(a) aluno(a):<br><br>
+          <b>${nome} - Turma: ${turma}</b><br><br>
+          ${obs}<br><br>
+          <b>Data:</b> ${data}<br><br>
+          _____________________<br>
+          Assinatura professor<br><br><br>
+          _____________________<br>
+          Assinatura responsável
+          <br><br>
+        </div>
+
+        <hr style="border-top: 2px dashed black; margin: 10px 0;">
+
+        <div class="card">
+          <div class="center">Comprovante de Entrega</div>
+          <hr>
+          <b>Aluno:</b> ${nome} - <b>Turma:</b> ${turma}<br>
+          <b>Data:</b> ${data}<br>
+          <b>Motivo:</b> ${obs}<br><br><br>
+          
+          <div class="center">______________________<br>Assinatura aluno</div>
+          <br><br>
+          <hr style="border-top: 2px dashed black; margin: 10px 0;">
+        </div>
+      `;
+    }
+
+    function limparFormulario() {
+      document.getElementById('bilheteForm').reset();
+      document.getElementById('data').valueAsDate = new Date();
+      
+      document.getElementById("previewSection").style.display = "none";
+      document.getElementById("previewArea").innerHTML = '';
+      document.getElementById("printArea").innerHTML = '';
+      document.getElementById("printBtn").disabled = true;
+      
+      document.getElementById('nome').classList.remove('form-validation');
+      document.getElementById('turma').classList.remove('form-validation');
+      document.getElementById('nomeError').style.display = 'none';
+      document.getElementById('turmaError').style.display = 'none';
+      
+      mostrarAlerta('', false);
+    }
+
+    document.getElementById('nome').addEventListener('blur', function() {
+      if (!this.value.trim()) {
+        this.classList.add('form-validation');
+        document.getElementById('nomeError').style.display = 'block';
+      } else {
+        this.classList.remove('form-validation');
+        document.getElementById('nomeError').style.display = 'none';
+      }
+    });
+
+    document.getElementById('turma').addEventListener('blur', function() {
+      if (!this.value.trim()) {
+        this.classList.add('form-validation');
+        document.getElementById('turmaError').style.display = 'block';
+      } else {
+        this.classList.remove('form-validation');
+        document.getElementById('turmaError').style.display = 'none';
+      }
+    });
+
+    document.addEventListener('keydown', function(event) {
+      if (event.ctrlKey && event.key === 'p') {
+        event.preventDefault();
+        if (!document.getElementById("printBtn").disabled) {
+          window.print();
+        }
+      }
+    });
+  </script>
+</body>
+</html>
