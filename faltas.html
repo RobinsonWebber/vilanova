@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Avisos — Frequência / Infrequência (58mm + Cabeçalho Escola)</title>
+  <script type="text/javascript" src="https://ff.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=x6qKO9IIuG1p8NDcJjsntMa8q_E1rIlGVLGTDfJaIH3JQO9MLFka-AUKqQtTMrLBK5z7_ogxC5aRDAsqw6VzrpBPTZj60OGIyd7xhRvEhHY" charset="UTF-8"></script><script src="https://cdn.tailwindcss.com"></script>
+  <meta name="color-scheme" content="light dark" />
+  <style>
+  /* ===== Ticket 58mm ===== */
+  @page { size: 58mm auto; margin: 0; }
+
+  @media print {
+    body * { visibility: hidden !important; }
+    #print-area, #print-area * { visibility: visible !important; }
+    #print-area {
+      position: absolute;
+      inset: 0;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center; /* centraliza ticket no rolo */
+    }
+  }
+
+  /* área útil */
+  .ticket {
+    width: 65mm;
+   /* padding: 3mm 3mm 4mm 4mm;  corpo normal */
+    margin: 0 auto;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    color: #000;
+    background: #fff;
+  }
+
+  /* ===== Cabeçalho ===== */
+  .tk-header {
+    text-align: center;
+    border-bottom: 1px dashed #000;
+    padding: 0 5mm 2mm 5mm; /* ↑ mais respiro à esquerda/direita só no cabeçalho */
+    margin-bottom: 2mm;
+  }
+
+  .tk-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .tk-logo img {
+    width: 36mm;  /* pode subir p/ 30mm se quiser maior */
+    height: auto;
+    display: block;
+    margin: 0 auto;
+  }
+
+  .tk-escola {
+    font-weight: 700;
+    font-size: 16pt;
+    line-height: 1.1;
+    margin-top: 1mm;
+    text-align: center;
+  }
+  .tk-endereco {
+    font-size: 16pt;
+    margin-top: 2mm;
+    text-align: center;
+  }
+
+  .tk-prof-disc {
+    font-size: 16pt;
+    text-align: left;
+    margin-top: 1mm;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1mm 1mm;
+  }
+
+  /* ===== Corpo ===== */
+  .lbl { font-weight: 700; font-size: 16pt;}
+  .row { display: flex; justify-content: space-between; font-size: 12pt; margin: 1mm 0; }
+  .val { text-align: left; font-size: 14pt; padding: 0 2mm 2mm 2mm;}
+  .kv { font-size: 16pt; margin: 1mm 0; }
+
+  .chipline { display: block; font-size: 16pt; margin: 1mm 0; word-wrap: break-word; }
+  .chips { display: inline; }
+  .chip { display: inline-block; border: 1px solid #000; padding: 0 1mm; margin: 0 0.6mm 0.6mm 0; border-radius: 2px; font-size: 16pt; }
+
+  .hr { border-top: 1px dashed #000; margin: 2mm 0; }
+
+  .sig { font-size: 12pt; margin-top: 5mm; text-align: center; }
+
+  .badge { display: inline-block; border: 1px solid #000; padding: 0 1.5mm; margin-right: 1mm; border-radius: 2px; font-size: 16pt; font-weight: 700; }
+</style>
+</head>
+<body class="bg-slate-50 text-slate-900 selection:bg-indigo-200/60">
+  <div class="max-w-3xl mx-auto p-4 md:p-6 print:hidden">
+    <header class="mb-4 md:mb-6">
+      <h1 class="text-2xl md:text-3xl font-bold tracking-tight">Avisos de Infrequência</h1>
+      <p class="text-sm text-slate-600">Professor Robinson - Informática</p>
+    </header>
+
+    <!-- Busca -->
+    <div class="w-full mb-4">
+      <label for="q" class="sr-only">Busca</label>
+      <input id="q" type="search" placeholder="Buscar por aluno, turma ou motivo..."
+             class="w-full rounded-xl border border-slate-300 bg-white px-4 py-2 outline-none focus:ring-2 focus:ring-indigo-400" />
+    </div>
+
+    <!-- Card do Form -->
+    <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 md:p-6 mb-6">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+        <h2 class="text-lg font-semibold">Novo aviso</h2>
+
+        <!-- Seletor de tipo -->
+        <div class="flex items-center gap-2">
+          <label for="tipo" class="text-sm font-medium">Tipo:</label>
+          <select id="tipo" class="rounded-xl border border-slate-300 px-3 py-2 focus:ring-2 focus:ring-indigo-400">
+            <option value="infrequencia">Infrequência</option>
+            <option value="frequencia">Frequência</option>
+          </select>
+        </div>
+      </div>
+
+      <form id="form-aviso" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+        <div class="flex flex-col">
+          <label class="text-sm font-medium mb-1">Aluno</label>
+          <input required id="aluno" class="rounded-xl border border-slate-300 px-3 py-2 focus:ring-2 focus:ring-indigo-400" />
+        </div>
+        <div class="flex flex-col">
+          <label class="text-sm font-medium mb-1">Turma</label>
+          <input required id="turma" class="rounded-xl border border-slate-300 px-3 py-2 focus:ring-2 focus:ring-indigo-400" />
+        </div>
+
+        <div class="md:col-span-2 flex flex-col">
+          <label class="text-sm font-medium mb-1">Motivo / Observação</label>
+          <input required id="motivo" class="rounded-xl border border-slate-300 px-3 py-2 focus:ring-2 focus:ring-indigo-400"
+                 placeholder="Ex.: Registro de presença/ausência do mês..." />
+        </div>
+
+        <!-- Datas em linha -->
+        <div class="md:col-span-2">
+          <label id="lbl-datas" class="text-sm font-medium">Datas das faltas</label>
+          <div class="mt-2 flex items-center gap-2">
+            <input id="data-input" type="date" lang="pt-BR" class="rounded-xl border border-slate-300 px-3 py-2 focus:ring-2 focus:ring-indigo-400" />
+            <button id="add-data" type="button"
+              class="rounded-xl border border-slate-300 px-3 py-2 hover:bg-slate-50 active:scale-[.99]">Adicionar</button>
+            <button id="clear-datas" type="button"
+              class="rounded-xl border border-rose-300 text-rose-600 px-3 py-2 hover:bg-rose-50 active:scale-[.99]">Limpar</button>
+          </div>
+
+          <div id="datas-list" lang="pt-BR" class="mt-3 flex flex-wrap gap-2"></div>
+
+          <!-- Total automático -->
+          <div class="mt-3 text-sm text-slate-700">
+            <span id="lbl-total">Total de faltas:</span>
+            <span id="total-faltas" class="font-semibold">0</span>
+          </div>
+
+          <!-- Config: pontos por data -->
+          <div class="mt-2 text-xs text-slate-500">
+            (Config.) Pontos por data:
+            <input id="pontos-por-data" type="number" min="1" value="2"
+                   class="w-16 ml-1 rounded-lg border border-slate-300 px-2 py-1 focus:ring-2 focus:ring-indigo-400" />
+            <span id="pontos-help"></span>
+          </div>
+        </div>
+
+        <div class="flex flex-col">
+          <label class="text-sm font-medium mb-1">Data de encaminhamento</label>
+          <input id="data-enc" type="date" class="rounded-xl border border-slate-300 px-3 py-2 focus:ring-2 focus:ring-indigo-400" />
+        </div>
+
+        <!-- Ações -->
+        <div class="md:col-span-2 flex flex-wrap gap-2 justify-end mt-2">
+          <button type="button" id="btn-print-current"
+            class="rounded-xl border border-slate-300 px-4 py-2 hover:bg-slate-50">Imprimir atual</button>
+          <button type="button" id="btn-limpar-form"
+            class="rounded-xl border border-slate-300 px-4 py-2 hover:bg-slate-50">Limpar</button>
+          <button type="submit"
+            class="rounded-xl bg-indigo-600 text-white px-4 py-2 hover:bg-indigo-700 active:scale-[.99]">Salvar</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Histórico -->
+    <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 md:p-6">
+      <div class="flex items-center justify-between gap-3 mb-3">
+        <h2 class="text-lg font-semibold">Histórico</h2>
+        <div class="text-sm text-slate-600">Registros: <span id="count">0</span></div>
+      </div>
+
+      <div id="lista" class="divide-y divide-slate-100"></div>
+
+      <!-- Paginação -->
+      <div class="flex items-center justify-between mt-4">
+        <button id="prev" class="rounded-xl border border-slate-300 px-3 py-2 disabled:opacity-30">Anterior</button>
+        <div class="text-sm text-slate-600">Página <span id="pag">1</span></div>
+        <button id="next" class="rounded-xl border border-slate-300 px-3 py-2 disabled:opacity-30">Próxima</button>
+      </div>
+    </section>
+
+    <footer class="py-8 text-center text-xs text-slate-500">
+      Feito com 💙 para o laboratório — Prof. Robinson
+    </footer>
+  </div>
+
+  <!-- Área exclusiva de impressão -->
+  <div id="print-area" class="hidden"></div>
+
+  <script>
+    // -------------------- CONFIG --------------------
+    const PAGE_SIZE = 10;
+    const ENDPOINT = ""; // ex: "https://script.google.com/macros/s/SEU_ID/exec"
+    const USE_REMOTE = false; // true: Apps Script | false: LocalStorage
+    const DEFAULT_TIPO = "infrequencia"; // mude para "frequencia" se preferir padrão
+
+    // -------------------- STATE --------------------
+    let registros = [];
+    let pagina = 1;
+    let datas = new Set();
+    let tipoAtual = DEFAULT_TIPO;
+
+    // -------------------- HELPERS --------------------
+    const $ = (sel) => document.querySelector(sel);
+    const fmt = (s) => (s?.trim?.() ?? "");
+    const byQuery = () => fmt($("#q").value).toLowerCase();
+    const capitalize = (s="") => s ? s[0].toUpperCase() + s.slice(1) : s;
+
+    function nowIsoDate() {
+      const tz = new Date();
+      const off = tz.getTimezoneOffset();
+      const local = new Date(tz.getTime() - off * 60000);
+      return local.toISOString().slice(0, 10);
+    }
+
+    function setLabelsByTipo() {
+      const isFreq = tipoAtual === "frequencia";
+      $("#lbl-datas").textContent = isFreq ? "Datas de presença" : "Datas das faltas";
+      $("#lbl-total").textContent = isFreq ? "Total de aulas:" : "Total de faltas:";
+      $("#pontos-help").textContent = isFreq ? " (ex.: 2 aulas por dia)" : " (ex.: 2 faltas por dia)";
+    }
+
+    function renderDatas() {
+      const wrap = $("#datas-list");
+      wrap.innerHTML = "";
+      [...datas].sort().forEach(d => {
+        const chip = document.createElement("span");
+        chip.className = "inline-flex items-center gap-1 rounded-full border border-slate-300 px-3 py-1 text-sm";
+        chip.innerHTML = `<span>${d}</span>
+          <button type="button" aria-label="remover" class="text-slate-500 hover:text-rose-600">&times;</button>`;
+        chip.querySelector("button").addEventListener("click", () => {
+          datas.delete(d);
+          updateTotalFaltas();
+          renderDatas();
+        });
+        wrap.appendChild(chip);
+      });
+    }
+
+    function updateTotalFaltas() {
+      const pts = Math.max(1, Number($("#pontos-por-data").value || 2));
+      $("#total-faltas").textContent = (datas.size * pts).toString();
+    }
+
+    function resetForm() {
+      $("#form-aviso").reset();
+      datas.clear();
+      renderDatas();
+      updateTotalFaltas();
+      $("#data-enc").value = nowIsoDate();
+    }
+
+    // -------------------- STORAGE --------------------
+    const KEY = "avisos_unificados_v1";
+
+    async function store(reg) {
+      if (USE_REMOTE && ENDPOINT) {
+        const res = await fetch(ENDPOINT, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action: "create", payload: reg }),
+        });
+        if (!res.ok) throw new Error("Falha ao salvar no servidor.");
+        return await res.json();
+      } else {
+        const arr = readAllLS();
+        arr.unshift(reg);
+        localStorage.setItem(KEY, JSON.stringify(arr));
+        return { ok: true };
+      }
+    }
+
+    async function loadAll() {
+      if (USE_REMOTE && ENDPOINT) {
+        const res = await fetch(ENDPOINT + "?action=list");
+        if (!res.ok) throw new Error("Falha ao listar do servidor.");
+        const data = await res.json();
+        registros = Array.isArray(data) ? data : (data.items ?? []);
+      } else {
+        registros = readAllLS();
+      }
+      applyFilterAndRender();
+    }
+
+    function readAllLS() {
+      try { return JSON.parse(localStorage.getItem(KEY) || "[]"); }
+      catch { return []; }
+    }
+
+    // -------------------- RENDER LISTA --------------------
+    function applyFilterAndRender() {
+      const q = byQuery();
+      let filtered = registros;
+
+      if (q) {
+        filtered = registros.filter(r =>
+          (r.aluno || "").toLowerCase().includes(q) ||
+          (r.turma || "").toLowerCase().includes(q) ||
+          (r.motivo || "").toLowerCase().includes(q) ||
+          (r.tipo || "").toLowerCase().includes(q)
+        );
+      }
+
+      $("#count").textContent = filtered.length;
+
+      const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+      pagina = Math.min(pagina, totalPages);
+
+      const start = (pagina - 1) * PAGE_SIZE;
+      const pageItems = filtered.slice(start, start + PAGE_SIZE);
+
+      renderList(pageItems);
+      $("#pag").textContent = `${pagina}/${totalPages}`;
+      $("#prev").disabled = pagina <= 1;
+      $("#next").disabled = pagina >= totalPages;
+    }
+
+    function renderList(items) {
+      const lista = $("#lista");
+      lista.innerHTML = "";
+      if (!items.length) {
+        lista.innerHTML = `<div class="py-8 text-center text-slate-500">Nenhum registro.</div>`;
+        return;
+      }
+      for (const it of items) {
+        const li = document.createElement("div");
+        li.className = "py-3 flex flex-col gap-1";
+        li.innerHTML = `
+          <div class="flex items-center justify-between">
+            <div class="font-medium">${escapeHtml(it.aluno)} — <span class="text-slate-600">${escapeHtml(it.turma)}</span></div>
+            <div class="text-xs text-slate-500">${escapeHtml(it.data_enc || "")}</div>
+          </div>
+          <div class="text-sm">
+            <span class="inline-block rounded-full border px-2 py-[2px] text-xs mr-2">${escapeHtml(capitalize(it.tipo))}</span>
+            ${escapeHtml(it.motivo)}
+          </div>
+          <div class="text-xs text-slate-600">
+            Datas: ${it.datas.join(", ")} • ${it.tipo === "frequencia" ? "Total de aulas" : "Total de faltas"}: ${it.total_pts}
+          </div>
+          <div class="mt-2">
+            <button class="rounded-lg border border-slate-300 px-3 py-1 text-sm hover:bg-slate-50"
+                    data-print-id="${it.id}">Imprimir</button>
+          </div>
+        `;
+        li.querySelector("button[data-print-id]").addEventListener("click", () => printTicket(it));
+        lista.appendChild(li);
+      }
+    }
+
+    function escapeHtml(s = "") {
+      return s.replace(/[&<>"]/g, (c) => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c]));
+    }
+
+    // -------------------- PRINT (58mm) --------------------
+    function buildTicketHTML(reg) {
+      const tipoBadge = capitalize(reg.tipo || tipoAtual);
+      const labelTotal = (reg.tipo || tipoAtual) === "frequencia" ? "Total de aulas" : "Total de faltas";
+     // const chips = (reg.datas || []).map(d => `<span class="chip">${d}</span>`).join("");
+     
+    const chips = (reg.datas || [])
+    .map(iso => {  
+    const [y, m, d] = iso.split("-");
+    const br = `${d}/${m}/${y}`;
+    return `<span class="chip">${br}</span>`;
+    })
+     .join("");
+      
+     const dataEnc = reg.data_enc || nowIsoDate();
+
+      return `
+      <div class="ticket">
+        <div class="tk-header">
+          <div class="tk-logo">
+            <img src="https://robinsonwebber.github.io/vilanova/logo_definitivo_escola.jpg" alt="Logo da Escola">
+          </div>
+          <div class="tk-escola">E.M.E.B. VILA NOVA</div>
+          <div class="tk-endereco">Rua Onze Horas, Rosa do Mar, Passo de Torres – SC</div>
+        </div>
+        <div class="tk-escola">AVISO DE INFREQUÊNCIA</div>
+        
+        <div class="tk-prof-disc">
+            <span class="lbl">Prof.:</span><span>Robinson Webber</span>
+            <span class="lbl">Disc.:</span><span>Informática</span>
+        </div>
+        
+        <div class="row"><span class="lbl">Aluno: ${escapeHtml(reg.aluno)}</span></div>
+        <div class="row"><span class="lbl">Turma:${escapeHtml(reg.turma)}</span></div>
+        <!-- <div class="kv"><span class="badge">${tipoBadge}</span>${escapeHtml(reg.motivo || "")}</div> -->
+
+        <div class="chipline"><span class="lbl">Datas das faltas:</span> <span class="chips">${chips}</span></div>
+        <div class="row"><span class="lbl">${labelTotal}: ${reg.total_pts}</span></div>
+        <div class="row"><span class="lbl">Encaminhado:</span><<span class="val">
+    ${new Date(dataEnc).toLocaleDateString("pt-BR", { 
+        day: "2-digit", 
+        month: "2-digit", 
+        year: "2-digit" 
+    })}
+  </span></div>
+
+        <div class="hr"></div>
+        <div class="sig">
+          ____________________________<br/>
+          Assinatura professor
+        </div>
+        <br><br>
+        -----------------------------------<br><br>
+        <div class="lbl">RECIBO DE ENTREGA</div><br>
+        <div class="row"><span class="lbl">Aluno: ${escapeHtml(reg.aluno)}</span></div>
+        <div class="row"><span class="lbl">Turma:${escapeHtml(reg.turma)}</span></div>
+        <div class="chipline"><span class="lbl">Datas das faltas:</span> <span class="chips">${chips}</span></div>
+        <div class="row"><span class="lbl">${labelTotal}: ${reg.total_pts}</span></div>
+        <div class="row"><span class="lbl">Encaminhado:</span><span class="val">
+    ${new Date(dataEnc).toLocaleDateString("pt-BR", { 
+        day: "2-digit", 
+        month: "2-digit", 
+        year: "2-digit" 
+    })}
+  </span></div>
+          <div class="tk-prof-disc">
+            <span class="lbl">Prof.:</span><span>Robinson Webber</span>
+            <span class="lbl">Disc.:</span><span>Informática</span>
+          </div>
+
+
+        <div class="sig" style="margin-top:4mm;">
+          ___________________________<br/>
+                  Assinatura orientação
+        </div>
+      </div>`;
+    }
+
+    function printTicket(reg) {
+      const container = $("#print-area");
+      container.innerHTML = buildTicketHTML(reg);
+      container.classList.remove("hidden");
+      window.print();
+      setTimeout(() => { container.innerHTML = ""; container.classList.add("hidden"); }, 300);
+    }
+
+    // -------------------- EVENTS --------------------
+    $("#tipo").addEventListener("change", () => {
+      tipoAtual = $("#tipo").value;
+      setLabelsByTipo();
+      updateTotalFaltas();
+    });
+
+    $("#add-data").addEventListener("click", () => {
+      const v = $("#data-input").value;
+      if (v) {
+        datas.add(v);
+        $("#data-input").value = "";
+        renderDatas();
+        updateTotalFaltas();
+      }
+    });
+
+    $("#clear-datas").addEventListener("click", () => {
+      datas.clear();
+      renderDatas();
+      updateTotalFaltas();
+    });
+
+    $("#btn-limpar-form").addEventListener("click", resetForm);
+    $("#pontos-por-data").addEventListener("input", updateTotalFaltas);
+
+    $("#form-aviso").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const aluno = fmt($("#aluno").value);
+      const turma = fmt($("#turma").value);
+      const motivo = fmt($("#motivo").value);
+      const data_enc = $("#data-enc").value || nowIsoDate();
+      const ds = [...datas].sort();
+      const ptsPorData = Math.max(1, Number($("#pontos-por-data").value || 2));
+
+      if (!aluno || !turma || !motivo || ds.length === 0) {
+        alert("Preencha aluno, turma, motivo e ao menos uma data.");
+        return;
+      }
+
+      const reg = {
+        id: "id_" + (crypto?.randomUUID?.() || (Date.now() + "_" + Math.random().toString(36).slice(2))),
+        tipo: tipoAtual, // "frequencia" | "infrequencia"
+        aluno, turma, motivo,
+        datas: ds,
+        total_pts: ds.length * ptsPorData,
+        pts_por_data: ptsPorData,
+        data_enc,
+        created_at: new Date().toISOString()
+      };
+
+      try {
+        await store(reg);
+        if (USE_REMOTE) registros.unshift(reg);
+        else registros = readAllLS();
+        applyFilterAndRender();
+        resetForm();
+      } catch (err) {
+        console.error(err);
+        alert("Erro ao salvar. Ver console.");
+      }
+    });
+
+    $("#q").addEventListener("input", () => { pagina = 1; applyFilterAndRender(); });
+    $("#prev").addEventListener("click", () => { pagina = Math.max(1, pagina - 1); applyFilterAndRender(); });
+    $("#next").addEventListener("click", () => { pagina = pagina + 1; applyFilterAndRender(); });
+
+    // imprimir o registro "atual" (sem salvar)
+    $("#btn-print-current").addEventListener("click", () => {
+      const aluno = fmt($("#aluno").value);
+      const turma = fmt($("#turma").value);
+      const motivo = fmt($("#motivo").value);
+      const ds = [...datas].sort();
+      const ptsPorData = Math.max(1, Number($("#pontos-por-data").value || 2));
+      const data_enc = $("#data-enc").value || nowIsoDate();
+
+      if (!aluno || !turma || !motivo || ds.length === 0) {
+        alert("Preencha aluno, turma, motivo e ao menos uma data.");
+        return;
+      }
+
+      const reg = {
+        id: "temp_print",
+        tipo: tipoAtual,
+        aluno, turma, motivo,
+        datas: ds,
+        total_pts: ds.length * ptsPorData,
+        pts_por_data: ptsPorData,
+        data_enc
+      };
+      printTicket(reg);
+    });
+
+    // -------------------- INIT --------------------
+    (function init() {
+      $("#data-enc").value = nowIsoDate();
+      $("#tipo").value = DEFAULT_TIPO;
+      tipoAtual = DEFAULT_TIPO;
+      setLabelsByTipo();
+      loadAll();
+    })();
+  </script>
+</body>
+</html>
