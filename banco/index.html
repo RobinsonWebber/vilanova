@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Banco Escolar - ATM</title>
+<style>
+  body{font-family:Arial, sans-serif; max-width:720px; margin:20px auto; padding:0 12px;}
+  header{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:16px;}
+  .card{border:1px solid #ddd; border-radius:14px; padding:16px; margin-bottom:16px; box-shadow:0 2px 8px rgba(0,0,0,.05);}
+  .row{display:flex; gap:12px; flex-wrap:wrap;}
+  .row > *{flex:1}
+  button{padding:10px 14px; border-radius:10px; border:1px solid #444; background:#fff; cursor:pointer}
+  button.primary{background:#0b6; color:#fff; border:none}
+  button.warn{background:#d9534f; color:#fff; border:none}
+  input, select{padding:10px; border-radius:10px; border:1px solid #bbb; width:100%;}
+  .status{margin-top:8px; font-size:14px; color:#333}
+  .balance{font-size:20px; font-weight:bold}
+
+  /* Comprovante 58mm */
+  #print-area{width:48mm; font-family:ui-monospace, monospace; font-size:12px; padding:6px}
+  #print-area h3{font-size:14px; margin:6px 0}
+  #print-area .line{border-top:1px dashed #000; margin:6px 0}
+  @media print{
+    body *{visibility:hidden}
+    #print-area, #print-area *{visibility:visible}
+    #print-area{position:absolute; inset:0}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Banco Escolar</h1>
+  <div><small>ATM Simulado</small></div>
+</header>
+
+<div class="card">
+  <h2>Login</h2>
+  <div class="row">
+    <div><label>ID do aluno</label><input id="inpId" placeholder="ex.: 101"></div>
+    <div><label>Selecionar conta</label>
+      <select id="selConta"></select>
+    </div>
+  </div>
+  <div class="row">
+    <button onclick="carregarContas()">Atualizar lista</button>
+    <button class="primary" onclick="entrar()">Entrar</button>
+  </div>
+  <div class="status" id="statusLogin"></div>
+</div>
+
+<div class="card">
+  <h2>Operações</h2>
+  <div class="row">
+    <div><label>Valor</label><input id="inpValor" type="number" step="0.01" placeholder="ex.: 2.50"></div>
+    <div><label>Descrição (opcional)</label><input id="inpDesc" placeholder="ex.: Tarefa cumprida"></div>
+  </div>
+  <div class="row">
+    <button class="primary" onclick="deposito()">Depositar</button>
+    <button class="warn" onclick="saque()">Sacar</button>
+    <button onclick="cheque()">Emitir cheque</button>
+    <button onclick="verSaldo()">Ver saldo</button>
+    <button onclick="imprimirComprovante()">Imprimir comprovante</button>
+  </div>
+  <div class="status balance" id="saldoBox">Saldo: —</div>
+  <div class="status" id="statusOps"></div>
+</div>
+
+<!-- Área oculta do comprovante -->
+<div id="print-area" style="display:none">
+  <h3>Banco Escolar</h3>
+  <div>Aluno: <span id="rNome">—</span></div>
+  <div>ID: <span id="rId">—</span></div>
+  <div>Operação: <span id="rOp">—</span></div>
+  <div>Valor: R$ <span id="rVal">0,00</span></div>
+  <div>Descrição: <span id="rDesc">—</span></div>
+  <div class="line"></div>
+  <div>Saldo após: R$ <span id="rSaldo">0,00</span></div>
+  <div class="line"></div>
+  <div><small>Data: <span id="rData"></span></small></div>
+</div>
+
+<script>
+  // Cole aqui a URL do seu Web App (Apps Script)
+  const API = 'https://script.google.com/macros/s/AKfycbxSJfwe-Uxj5iCQxbURt1rr1rg1LKSz_VozTM6q55Y/dev';
+               
+
+  let contaAtual = { id:null, nome:null, saldo:0 };
+  let ultimoOp = { op:'—', valor:0, desc:'—', saldo:0 };
+
+  async function carregarContas(){
+    setStatus('statusLogin','Carregando contas...');
+    const url = API + '?action=contas';
+    const res = await fetch(url);
+    const js  = await res.json();
+    const sel = document.getElementById('selConta');
+    sel.innerHTML = '';
+    if(js.ok){
+      js.contas.forEach(c=>{
+        const opt = document.createElement('option');
+        opt.value = c.id;
+        opt.textContent = `${c.id} - ${c.nome} (R$ ${Number(c.saldo).toFixed(2)})`;
+        sel.appendChild(opt);
+      });
+      setStatus('statusLogin',`Contas carregadas: ${js.contas.length}`);
+    }else{
+      setStatus('statusLogin','Erro ao carregar contas: '+js.msg);
+    }
+  }
+
+  async function entrar(){
+    const idTexto = document.getElementById('inpId').value.trim() || document.getElementById('selConta').value;
+    if(!idTexto){ setStatus('statusLogin','Informe um ID'); return; }
+    const url = API + '?action=saldo&id=' + encodeURIComponent(idTexto);
+    const res = await fetch(url);
+    const js  = await res.json();
+    if(js.ok){
+      contaAtual = { id: js.id, nome: js.nome, saldo: Number(js.saldo||0) };
+      document.getElementById('saldoBox').textContent = 'Saldo: R$ ' + contaAtual.saldo.toFixed(2);
+      setStatus('statusLogin',`Bem-vindo(a), ${contaAtual.nome}!`);
+    }else{
+      setStatus('statusLogin','Conta não encontrada.');
+    }
+  }
+
+  async function verSaldo(){
+    if(!contaAtual.id){ setStatus('statusOps','Faça login primeiro'); return; }
+    const url = API + '?action=saldo&id=' + encodeURIComponent(contaAtual.id);
+    const res = await fetch(url);
+    const js  = await res.json();
+    if(js.ok){
+      contaAtual.saldo = Number(js.saldo||0);
+      document.getElementById('saldoBox').textContent = 'Saldo: R$ ' + contaAtual.saldo.toFixed(2);
+      setStatus('statusOps','Saldo atualizado.');
+    }else{
+      setStatus('statusOps','Erro ao consultar saldo.');
+    }
+  }
+
+  async function deposito(){
+    await _mov('deposito');
+  }
+
+  async function saque(){
+    await _mov('saque');
+  }
+
+  async function cheque(){
+    await _mov('cheque');
+  }
+
+  async function _mov(tipo){
+    if(!contaAtual.id){ setStatus('statusOps','Faça login primeiro'); return; }
+    const valor = Number(document.getElementById('inpValor').value || 0);
+    const descricao = document.getElementById('inpDesc').value || '';
+    if(!valor || valor<=0){ setStatus('statusOps','Informe um valor > 0'); return; }
+
+    const res = await fetch(API, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ action: tipo, id: contaAtual.id, valor, descricao })
+    });
+    const js = await res.json();
+    if(js.ok){
+      contaAtual.saldo = Number(js.saldo||0);
+      document.getElementById('saldoBox').textContent = 'Saldo: R$ ' + contaAtual.saldo.toFixed(2);
+      setStatus('statusOps',`OK: ${tipo.toUpperCase()} registrado.`);
+      ultimoOp = { op: tipo.toUpperCase(), valor, desc: descricao||'—', saldo: contaAtual.saldo };
+      preencherRecibo();
+    }else{
+      setStatus('statusOps','Erro: '+js.msg);
+    }
+  }
+
+  function preencherRecibo(){
+    document.getElementById('rNome').textContent  = contaAtual.nome || '—';
+    document.getElementById('rId').textContent    = contaAtual.id || '—';
+    document.getElementById('rOp').textContent    = ultimoOp.op;
+    document.getElementById('rVal').textContent   = (ultimoOp.valor||0).toFixed(2).replace('.',',');
+    document.getElementById('rDesc').textContent  = ultimoOp.desc || '—';
+    document.getElementById('rSaldo').textContent = (ultimoOp.saldo||0).toFixed(2).replace('.',',');
+    document.getElementById('rData').textContent  = new Date().toLocaleString();
+  }
+
+  function imprimirComprovante(){
+    const el = document.getElementById('print-area');
+    el.style.display = 'block';
+    window.print();
+    el.style.display = 'none';
+  }
+
+  function setStatus(id, msg){ document.getElementById(id).textContent = msg; }
+
+  // carregar lista ao abrir
+  carregarContas();
+</script>
+</body>
+</html>
