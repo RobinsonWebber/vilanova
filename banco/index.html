@@ -2,27 +2,56 @@
 <html lang="pt-br">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>Banco Escolar – ATM PIX (Alunos)</title>
+<title>Banco Escolar – ATM PIX</title>
+
 <style>
-  :root{ --bg:#f6f6f6; --card:#fff; --text:#222; --pri:#0a7; --warn:#c33; }
-  body{font-family:Arial,sans-serif; background:var(--bg); color:var(--text); margin:0; padding:12px; max-width:480px; margin-inline:auto}
-  h2{margin:8px 0 12px}
-  .screen{background:#111; color:#0f0; padding:14px; border-radius:14px; min-height:96px; font:16px/1.5 ui-monospace,monospace}
-  .card{background:var(--card); border:1px solid #ddd; border-radius:16px; padding:16px; box-shadow:0 2px 8px rgba(0,0,0,.05); margin:14px 0}
-  input,select{width:100%; padding:12px; border:1px solid #bbb; border-radius:12px; font-size:18px; background:#fff}
-  .row{display:flex; gap:10px; flex-wrap:wrap}
-  .row>*{flex:1}
-  button{padding:14px; border:none; border-radius:12px; background:#222; color:#fff; font-size:16px; cursor:pointer}
-  button.primary{background:var(--pri)}
-  button.warn{background:var(--warn)}
-  button.outline{background:#fff; color:#222; border:1px solid #222}
-  .small{font-size:13px; color:#666; margin-top:6px}
-  .numgrid{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:10px}
-  .numgrid button{padding:16px; font-size:20px; background:#fff; color:#222; border:1px solid #222; border-radius:12px}
-  .tickets{display:none}
-  @media (orientation:portrait){
-    body{max-width:440px}
+  :root{
+    --bg:#f2f2f2; --card:#ffffff; --ink:#222; --muted:#666;
+    --line:#ddd; --ok:#0a7; --warn:#c33; --dark:#111; --green:#0f0;
+    --beige:#ecdfb0;
   }
+  body{margin:0; font-family:Arial,Helvetica,sans-serif; background:var(--bg); color:var(--ink);}
+  .wrap{max-width:1000px; margin:18px auto; padding:0 12px;}
+  /* header */
+  .header{display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:10px}
+  .logo{width:44px; height:44px; object-fit:contain}
+  .header h1{font-size:26px; margin:0; letter-spacing:.5px; font-weight:800}
+  .header .bar{height:3px; width:110px; background:#000; margin-top:2px}
+  /* layout columns */
+  .grid{
+    display:grid; grid-template-columns:1fr 340px; gap:14px;
+  }
+  @media (max-width:860px){
+    .grid{grid-template-columns:1fr}
+  }
+  .card{background:var(--card); border:1px solid var(--line); border-radius:16px; box-shadow:0 2px 8px rgba(0,0,0,.05)}
+  .left{padding:12px 14px}
+  .right{padding:12px 14px; background:var(--beige)}
+  /* monitor */
+  .monitor{background:var(--dark); color:var(--green); border-radius:14px; padding:14px; min-height:74px; font:16px/1.5 ui-monospace,monospace; display:flex; align-items:center}
+  /* rows */
+  .row{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px}
+  .row>*{flex:1}
+  input,select{width:100%; padding:12px; border:1px solid #bbb; border-radius:12px; font-size:16px; background:#fff}
+  /* keypad */
+  .keypad{display:grid; grid-template-columns:repeat(3,1fr); gap:10px}
+  .btn{padding:12px; border-radius:12px; border:1px solid #222; background:#fff; font-weight:700; cursor:pointer}
+  .btn:active{transform:translateY(1px)}
+  .primary{background:var(--ok); color:#fff; border:none}
+  .danger{background:var(--warn); color:#fff; border:none}
+  .ghost{background:#fff; color:#222; border:1px solid #222}
+  .full{width:100%}
+  .titleBtn{font-weight:bold}
+  .value-btn{padding:12px; border:none; border-radius:12px; color:#fff; font-weight:bold}
+  .v1{background:#2ecc71} .v5{background:#2980b9} .v10{background:#e67e22}
+  /* receipt panel */
+  .rcpt{background:#fff; border:1px dashed #888; border-radius:10px; padding:10px; min-height:220px}
+  .rcpt h3{margin:6px 0 8px; font:600 16px/1.2 ui-monospace,monospace}
+  .line{border-top:1px dashed #000; margin:8px 0}
+  .muted{color:var(--muted); font-size:13px}
+  .printZone{display:flex; flex-direction:column; gap:10px}
+  .hidden{display:none}
+  /* print – 58mm */
   @media print{
     body *{visibility:hidden}
     #ticket, #ticket *{visibility:visible}
@@ -31,110 +60,153 @@
 </style>
 
 <body>
-<header class="header">
-  <div align="center">
-  <img src="https://robinsonwebber.github.io/vilanova/logo_definitivo_escola.jpg" width="65" height="80" style="max-width:100%;height:auto;" alt="Logo da Escola" 
-       alt="Logo Banco" class="logo">
-  <h2>BANCO VILA NOVA</h2>
-  </header>
-</div>
-</header>
+<div class="wrap">
+  <!-- HEADER -->
+  <div class="header">
+    <img class="logo" src="https://robinsonwebber.github.io/vilanova/logo_definitivo_escola.jpg" alt="logo">
+    <div>
+      <h1>BANCO VILA NOVA</h1>
+    <!---- <div class="bar"></div>-->
+    </div>
+  </div>
 
+  <div class="grid">
+    <!-- LEFT PANEL -->
+    <div class="card left">
+      <!-- monitor -->
+      <div id="screen" class="monitor">Digite seu <b>NÚMERO DE CONTA</b> e toque "Entrar".</div>
 
-<!-- Login / Conta -->
-<div class="card">
-  <div class="screen" id="screen">Digite seu <b>NÚMERO DE CONTA</b> e toque “Entrar”.</div>
-  <div class="row" style="margin-top:10px">
-    <input id="inpConta" placeholder="nº da conta (ex.: 101)" inputmode="numeric" />
-    <button class="primary" onclick="entrar()">Entrar</button>
-    <button class="outline" onclick="limpar()">Limpar</button>
-  </div>
-  <div class="numgrid">
-    <button onclick="num('1')">1</button><button onclick="num('2')">2</button><button onclick="num('3')">3</button>
-    <button onclick="num('4')">4</button><button onclick="num('5')">5</button><button onclick="num('6')">6</button>
-    <button onclick="num('7')">7</button><button onclick="num('8')">8</button><button onclick="num('9')">9</button>
-    <button onclick="num('0')">0</button><button onclick="back()">←</button><button onclick="limpar()">C</button>
-  </div>
-  <div class="small" id="statusLogin"></div>
-</div>
+      <!-- conta + ações -->
+      <div class="row">
+        <input id="inpConta" placeholder="nº da conta (ex.: 101)" inputmode="numeric">
+        <button class="btn primary titleBtn" onclick="entrar()">Entrar</button>
+        <button class="btn ghost titleBtn" onclick="limparConta()">Limpar</button>
+      </div>
 
-<!-- Operações -->
-<div class="card">
-  <div class="row">
-    <input id="inpValor" type="number" step="0.01" placeholder="Valor (ex.: 2.50)">
-    <div class="row" style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap;">
-    <button class="outline" onclick="addVal(1)">+1</button>
-    <button class="outline" onclick="addVal(5)">+5</button>
-    <button class="outline" onclick="addVal(10)">+10</button>
-  
-  </div>
-  <div class="row" style="margin-top:6px;">
-  <button class="outline" style="width:100%; font-weight:bold;" onclick="limparValor()">Limpar Valor</button>
-  </div>
-  </div>
-  <div class="row">
-    <input id="inpPix" placeholder="chave PIX destino (ex.: joao@3A)">
-  </div>
-  <div class="row" style="margin-top:8px">
-    <button class="primary" onclick="deposito()">Depositar</button>
-    <button class="warn" onclick="enviarPix()">Enviar PIX</button>
-    <button class="outline" onclick="verSaldo()">Saldo</button>
-     <button class="info" onclick="logout()">Encerrar</button>
-  </div>
-  <div class="small" id="statusOps"></div>
-</div>
+      <!-- keypad -->
+      <div class="row">
+        <div class="keypad" style="flex:1.6">
+          <button class="btn" onclick="num('1')">1</button>
+          <button class="btn" onclick="num('2')">2</button>
+          <button class="btn" onclick="num('3')">3</button>
+          <button class="btn" onclick="num('4')">4</button>
+          <button class="btn" onclick="num('5')">5</button>
+          <button class="btn" onclick="num('6')">6</button>
+          <button class="btn" onclick="num('7')">7</button>
+          <button class="btn" onclick="num('8')">8</button>
+          <button class="btn" onclick="num('9')">9</button>
+          <button class="btn" onclick="num('0')">0</button>
+          <button class="btn" onclick="back()">←</button>
+          <button class="btn" onclick="limparConta()">C</button>
+        </div>
+      </div>
 
-<!-- Ticket impressão -->
-<div id="ticket" class="tickets">
-  <h3>Banco Escolar</h3>
-  <div>Conta: <span id="tConta">—</span></div>
-  <div>Operação: <span id="tOp">—</span></div>
-  <div>Valor: R$ <span id="tVal">0,00</span></div>
-  <div>Saldo: R$ <span id="tSaldo">0,00</span></div>
-  <div>Obs: <span id="tObs">—</span></div>
-  <hr>
-  <div>Data: <span id="tData"></span></div>
+      <!-- VALOR -->
+      <div class="row">
+        <input id="inpValor" type="number" step="0.01" placeholder="Valor (ex.: 2.50)">
+        <button class="value-btn v1"  onclick="addVal(1)">+1</button>
+        <button class="value-btn v5"  onclick="addVal(5)">+5</button>
+        <button class="value-btn v10" onclick="addVal(10)">+10</button>
+        <button class="btn ghost full" onclick="limparValor()">Limpar Valor</button>
+      </div>
+
+      <!-- PIX -->
+      <div class="row">
+        <input id="inpPix" placeholder="chave PIX destino (ex.: joao@3A)">
+      </div>
+
+      <!-- actions -->
+      <div class="row">
+        <button class="btn primary" onclick="deposito()">Depositar</button>
+        <button class="btn danger"  onclick="enviarPix()">Enviar PIX</button>
+        <button class="btn ghost"   onclick="verSaldo()">Saldo</button>
+        <button class="btn" style="background:#333;color:#fff" onclick="logout()">Encerrar</button>
+      </div>
+
+      <div id="statusOps" class="muted" style="margin-top:6px"></div>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="card right">
+      <div class="printZone">
+        <div class="muted"><b>Impressões</b> — o botão <i>Imprimir</i> aparece quando houver dados.</div>
+        <div id="ticket" class="rcpt">
+          <h3>Banco Escolar</h3>
+          <div>Conta: <span id="tConta">-</span></div>
+          <div>Operação: <span id="tOp">-</span></div>
+          <div>Valor: R$ <span id="tVal">0,00</span></div>
+          <div>Saldo: R$ <span id="tSaldo">0,00</span></div>
+          <div>Obs: <span id="tObs">-</span></div>
+          <div class="line"></div>
+          <div>Data: <span id="tData"></span></div>
+        </div>
+
+        <button id="btnPrint" class="btn primary hidden" onclick="window.print()">Imprimir</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
-  // Cole sua URL /exec do Apps Script
-  const API = 'https://script.google.com/macros/s/AKfycbzzSNtKpPK-oLsoE4QgCPS5FzQmFV_dHBfIR5CLvZaPl6TclUTubQFA7yTHSPWn8-6E/exec';
+  /* ====== CONFIG ====== */
+  const API = 'https://script.google.com/macros/s/AKfycbzzSNtKpPK-oLsoE4QgCPS5FzQmFV_dHBfIR5CLvZaPl6TclUTubQFA7yTHSPWn8-6E/exec'; /* troque pela URL /exec do seu Apps Script */
+  if(!/^https:\/\/script\.google\.com\/macros\/s\//.test(API)){ alert('Configure a constante API com a URL /exec do Apps Script.'); }
 
-  let contaAtual = { id:null, nome:null, saldo:0, chave_pix:'' };
+  /* ====== STATE ====== */
+  var contaAtual = { id:null, nome:null, saldo:0, chave_pix:'' };
 
-  // Helpers UI
+  /* ====== UI HELPERS ====== */
   function setScreen(msg){ document.getElementById('screen').innerHTML = msg; }
-  function setStatus(id, msg){ document.getElementById(id).textContent = msg; }
-  function num(n){ document.getElementById('inpConta').value += n; }
-  function back(){ var i=document.getElementById('inpConta'); i.value=i.value.slice(0,-1); }
-  function limpar(){ document.getElementById('inpConta').value=''; setStatus('statusLogin',''); }
+  function setStatus(id,msg){ document.getElementById(id).textContent = msg; }
+  function fmt(v){ return Number(v||0).toFixed(2).replace('.',','); }
+  function showPrint(show){
+    var b = document.getElementById('btnPrint');
+    b.classList[show?'remove':'add']('hidden');
+  }
 
-  function fmt(v){ return Number(v||0).toFixed(2).replace('.', ','); }
+  /* ====== LOGIN / INPUT ====== */
+  function num(n){ document.getElementById('inpConta').value += n; }
+  function back(){ var i=document.getElementById('inpConta'); i.value = i.value.slice(0,-1); }
+  function limparConta(){ document.getElementById('inpConta').value=''; setStatus('statusOps',''); }
+  function limparValor(){ document.getElementById('inpValor').value=''; setStatus('statusOps','Valor apagado.'); showPrint(false); }
+  function addVal(v){
+    var el = document.getElementById('inpValor');
+    var atual = Number(el.value || 0);
+    el.value = (atual + v).toFixed(2);
+  }
+  function logout(){
+    contaAtual = { id:null, nome:null, saldo:0, chave_pix:'' };
+    document.getElementById('inpConta').value='';
+    document.getElementById('inpValor').value='';
+    document.getElementById('inpPix').value='';
+    setScreen('Digite seu <b>NÚMERO DE CONTA</b> e toque "Entrar".');
+    setStatus('statusOps','Sessão encerrada.');
+    showPrint(false);
+  }
+
   function telaSaldo(){
-    var linha1 = 'Conta <b>' + (contaAtual.id||'-') + '</b> - Saldo: <b>R$ ' + fmt(contaAtual.saldo) + '</b>';
-    var linha2 = '<br>PIX: <b>' + (contaAtual.chave_pix || '-') + '</b>';
+    var linha1 = 'Conta <b>' + (contaAtual.id||'-') + '</b> — Saldo: <b>R$ ' + fmt(contaAtual.saldo) + '</b>';
+    var linha2 = '<br>PIX: <b>' + (contaAtual.chave_pix||'-') + '</b>';
     setScreen(linha1 + linha2);
   }
 
+  /* ====== CALLS ====== */
   async function entrar(){
     var id = document.getElementById('inpConta').value.trim();
-    if(!id){ setStatus('statusLogin','Informe o numero da conta.'); return; }
+    if(!id){ setStatus('statusOps','Informe o número da conta.'); return; }
     try{
-      setStatus('statusLogin','Consultando...');
+      setStatus('statusOps','Consultando…');
       var res = await fetch(API + '?action=saldo&id=' + encodeURIComponent(id));
-      if(!res.ok){ setStatus('statusLogin','Falha de rede.'); return; }
+      if(!res.ok){ setStatus('statusOps','Falha de rede.'); return; }
       var js = await res.json();
       if(js.ok){
-        contaAtual = { id: js.id, nome: js.nome, saldo: Number(js.saldo||0), chave_pix: js.chave_pix||'' };
+        contaAtual = { id:js.id, nome:js.nome, saldo:Number(js.saldo||0), chave_pix:js.chave_pix||'' };
         telaSaldo();
-        setStatus('statusLogin','Pronto para deposito, PIX e saldo.');
+        setStatus('statusOps','Pronto para depósito, PIX e saldo.');
       }else{
-        setStatus('statusLogin','Conta nao encontrada.');
+        setStatus('statusOps','Conta não encontrada.');
       }
-    }catch(e){
-      setStatus('statusLogin','Erro de rede/JS.');
-      console.error(e);
-    }
+    }catch(e){ setStatus('statusOps','Erro de rede/JS.'); console.error(e); }
   }
 
   async function verSaldo(){
@@ -145,99 +217,60 @@
       var js = await res.json();
       if(js.ok){
         contaAtual.saldo = Number(js.saldo||0);
-        telaSaldo();
-        setStatus('statusOps','Saldo atualizado.');
-      }else{
-        setStatus('statusOps','Erro ao consultar saldo.');
-      }
-    }catch(e){
-      setStatus('statusOps','Erro de rede/JS.');
-      console.error(e);
-    }
+        telaSaldo(); setStatus('statusOps','Saldo atualizado.');
+      }else{ setStatus('statusOps','Erro ao consultar saldo.'); }
+    }catch(e){ setStatus('statusOps','Erro de rede/JS.'); console.error(e); }
   }
 
   async function deposito(){
     if(!contaAtual.id){ setStatus('statusOps','Entre com a conta primeiro.'); return; }
     var valor = Number(document.getElementById('inpValor').value||0);
-    if(!valor || valor<=0){ setStatus('statusOps','Informe um valor valido.'); return; }
+    if(!valor || valor<=0){ setStatus('statusOps','Informe um valor válido.'); return; }
     try{
       var res = await fetch(API, {
-        method:'POST',
-        headers:{ 'Content-Type':'text/plain;charset=utf-8' },
+        method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
         body: JSON.stringify({ action:'deposito', id:String(contaAtual.id), valor:valor, descricao:'DEP aluno' })
       });
       if(!res.ok){ setStatus('statusOps','Falha (HTTP ' + res.status + ').'); return; }
       var js = await res.json();
       if(js.ok){
         contaAtual.saldo = Number(js.saldo||0);
-        telaSaldo();
-        setStatus('statusOps','Deposito registrado. Imprimindo comprovante...');
-        ticket('DEPOSITO', valor, '-');
-        window.print();
-      }else{
-        setStatus('statusOps','Erro: ' + (js.msg||'desconhecido'));
-      }
-    }catch(e){
-      setStatus('statusOps','Erro de rede/JS.');
-      console.error(e);
-    }
+        telaSaldo(); setStatus('statusOps','Depósito registrado.');
+        ticket('DEPÓSITO', valor, '-'); showPrint(true);
+      }else{ setStatus('statusOps','Erro: ' + (js.msg||'desconhecido')); }
+    }catch(e){ setStatus('statusOps','Erro de rede/JS.'); console.error(e); }
   }
 
   async function enviarPix(){
     if(!contaAtual.id){ setStatus('statusOps','Entre com a conta primeiro.'); return; }
     var valor = Number(document.getElementById('inpValor').value||0);
     var destinoPix = document.getElementById('inpPix').value.trim();
-    if(!valor || valor<=0){ setStatus('statusOps','Informe um valor valido.'); return; }
+    if(!valor || valor<=0){ setStatus('statusOps','Informe um valor válido.'); return; }
     if(!destinoPix){ setStatus('statusOps','Informe a chave PIX de destino.'); return; }
     try{
       var res = await fetch(API, {
-        method:'POST',
-        headers:{ 'Content-Type':'text/plain;charset=utf-8' },
+        method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
         body: JSON.stringify({ action:'pix', origem:String(contaAtual.id), destino_pix:String(destinoPix), valor:valor, descricao:'PIX aluno' })
       });
       if(!res.ok){ setStatus('statusOps','Falha (HTTP ' + res.status + ').'); return; }
       var js = await res.json();
       if(js.ok){
         contaAtual.saldo = Number((js.origem && js.origem.saldo) || contaAtual.saldo);
-        telaSaldo();
-        setStatus('statusOps','PIX enviado. Imprimindo comprovante...');
-        ticket('PIX', valor, 'Para ' + destinoPix);
-        window.print();
-      }else{
-        setStatus('statusOps','Erro: ' + (js.msg||'desconhecido'));
-      }
-    }catch(e){
-      setStatus('statusOps','Erro de rede/JS.');
-      console.error(e);
-    }
+        telaSaldo(); setStatus('statusOps','PIX enviado.');
+        ticket('PIX', valor, 'Para ' + destinoPix); showPrint(true);
+      }else{ setStatus('statusOps','Erro: ' + (js.msg||'desconhecido')); }
+    }catch(e){ setStatus('statusOps','Erro de rede/JS.'); console.error(e); }
   }
 
+  /* ====== TICKET ====== */
   function ticket(op, valor, obs){
     document.getElementById('tConta').textContent = contaAtual.id||'-';
-    document.getElementById('tOp').textContent = op;
-    document.getElementById('tVal').textContent = fmt(valor);
+    document.getElementById('tOp').textContent    = op;
+    document.getElementById('tVal').textContent   = fmt(valor);
     document.getElementById('tSaldo').textContent = fmt(contaAtual.saldo);
-    document.getElementById('tObs').textContent = obs||'-';
-    document.getElementById('tData').textContent = new Date().toLocaleString();
-    document.getElementById('ticket').style.display = 'block';
+    document.getElementById('tObs').textContent   = obs||'-';
+    document.getElementById('tData').textContent  = new Date().toLocaleString();
   }
-
-  function addVal(v){
-  var el = document.getElementById('inpValor');
-  var atual = Number(el.value || 0);
-  el.value = (atual + v).toFixed(2);
-  }
-
-function logout(){
-  contaAtual = { id:null, nome:null, saldo:0, chave_pix:'' };
-  document.getElementById('inpConta').value = '';
-  document.getElementById('inpValor').value = '';
-  document.getElementById('inpPix').value = '';
-  setScreen('Digite seu <b>NÚMERO DE CONTA</b> e toque “Entrar”.');
-  setStatus('statusLogin','Sessão encerrada.');
-  setStatus('statusOps','');
- }  
 </script>
-
 </body>
 </html>
