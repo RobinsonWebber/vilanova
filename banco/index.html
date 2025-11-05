@@ -158,7 +158,18 @@
   /* ====== UI HELPERS ====== */
   function setScreen(msg){ document.getElementById('screen').innerHTML = msg; }
   function setStatus(id,msg){ document.getElementById(id).textContent = msg; }
-  function fmt(v){ return Number(v||0).toFixed(2).replace('.',','); }
+
+  /* Função para corrigir valor para Real */
+  /*  function fmt(v){ return Number(v||0).toFixed(2).replace('.',','); }*/
+  function fmtNum(valor){
+  return Number(valor).toLocaleString('pt-BR', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+   });
+ }
+
+
+  
   function showPrint(show){
     var b = document.getElementById('btnPrint');
     b.classList[show?'remove':'add']('hidden');
@@ -185,8 +196,9 @@
   }
 
   function telaSaldo(){
-    var linha1 = 'Conta <b>' + (contaAtual.id||'-') + '</b> — Saldo: <b>R$ ' + fmt(contaAtual.saldo) + '</b>';
-    var linha2 = '<br>PIX: <b>' + (contaAtual.chave_pix||'-') + '</b>';
+    var linha1 = 'Bem vindo' + ' ' + (contaAtual.nome||'-') + '</br>'
+    var linha2 = 'Conta: <b>' + (contaAtual.id||'-') + '</b> — Saldo: <b>R$ ' + fmt(contaAtual.saldo) + '</b>';
+    var linha3 = '<br>PIX: <b>' + (contaAtual.chave_pix||'-') + '</b>';
     setScreen(linha1 + linha2);
   }
 
@@ -274,3 +286,4 @@
 </script>
 </body>
 </html>
+
