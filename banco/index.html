@@ -52,11 +52,27 @@
   .printZone{display:flex; flex-direction:column; gap:10px}
   .hidden{display:none}
   /* print – 58mm */
-  @media print{
-    body *{visibility:hidden}
-    #ticket, #ticket *{visibility:visible}
-    #ticket{position:absolute; inset:0; width:58mm; font-family:ui-monospace,monospace; font-size:12px; padding:8px}
+  @media print {
+  body * { visibility: hidden; }
+  #ticket, #ticket * {
+    visibility: visible;
   }
+  #ticket {
+    position: relative;      /* não usa inset:0 */
+    margin: 0 auto;
+    width: 58mm;             /* mantém largura térmica */
+    font-family: ui-monospace, monospace;
+    font-size: 12px;
+    padding: 8px;
+    line-height: 1.3;
+    background: #fff;
+  }
+
+  @page {
+    size: auto;              /* deixa o navegador ajustar */
+    margin: 0;               /* sem margens extras */
+  }
+}
 </style>
 
 <body>
@@ -196,7 +212,7 @@
   }
 
   function telaSaldo(){
-    var linha1 = 'Bem vindo' + ' ' + (contaAtual.nome||'-') + '- Conta:'  + (contaAtual.id||'-') + '<br><br>'
+    var linha1 = 'Bem vindo(a)' + ' ' + (contaAtual.nome||'-') + ' - Conta:'  + (contaAtual.id||'-') + '<br><br>'
     var linha2 = 'PIX:' + (contaAtual.chave_pix||'-') + ' - Saldo: R$ ' + fmt(contaAtual.saldo);
    setScreen(linha1 + linha2);
   }
@@ -285,6 +301,7 @@
 </script>
 </body>
 </html>
+
 
 
 
