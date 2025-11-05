@@ -196,10 +196,9 @@
   }
 
   function telaSaldo(){
-    var linha1 = 'Bem vindo' + ' ' + (contaAtual.nome||'-') + 'Conta:'  + (contaAtual.id||'-') + '</br>'
-    var linha2 = 'Conta: <b>' + (contaAtual.id||'-') + '</b> — Saldo: <b>R$ ' + fmt(contaAtual.saldo) + '</b>';
-    var linha3 = '<br>PIX: <b>' + (contaAtual.chave_pix||'-') + '</b>';
-    setScreen(linha1 + linha2 + linha3);
+    var linha1 = 'Bem vindo' + ' ' + (contaAtual.nome||'-') + '- Conta:'  + (contaAtual.id||'-') + '<br><br>'
+    var linha2 = 'PIX:' + (contaAtual.chave_pix||'-') + ' - Saldo: R$ ' + fmt(contaAtual.saldo);
+   setScreen(linha1 + linha2);
   }
 
   /* ====== CALLS ====== */
@@ -286,6 +285,7 @@
 </script>
 </body>
 </html>
+
 
 
 
