@@ -74,7 +74,7 @@
     <!-- LEFT PANEL -->
     <div class="card left">
       <!-- monitor -->
-      <div id="screen" class="monitor">Digite seu <b>NÚMERO DE CONTA</b> e toque "Entrar".</div>
+      <div id="screen" class="monitor">Digite seu NÚMERO DE CONTA e toque "Entrar".</div>
 
       <!-- conta + ações -->
       <div class="row">
@@ -161,7 +161,7 @@
 
   /* Função para corrigir valor para Real */
   /*  function fmt(v){ return Number(v||0).toFixed(2).replace('.',','); }*/
-  function fmtNum(valor){
+  function fmt(valor){
   return Number(valor).toLocaleString('pt-BR', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
@@ -286,4 +286,5 @@
 </script>
 </body>
 </html>
+
 
