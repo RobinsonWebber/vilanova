@@ -251,10 +251,12 @@
 
   async function deposito(){
     if(!contaAtual.id){ setStatus('statusOps','Entre com a conta primeiro.'); return; }
+    
+    const btn = document.getElementById('btn_deposito');
     var valor = Number(document.getElementById('inpValor').value||0);
     if(!valor || valor<=0){ setStatus('statusOps','Informe um valor válido.'); return; }
     try{
-      btn_deposito.disable = true; /* desabilita botão para evitar valores duplicados */
+      btn.disabled = true; /* desabilita botão para evitar valores duplicados */
       var res = await fetch(API, {
         method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
         body: JSON.stringify({ action:'deposito', id:String(contaAtual.id), valor:valor, descricao:'DEP aluno' })
@@ -266,20 +268,23 @@
         telaSaldo(); setStatus('statusOps','Depósito registrado.');
         ticket('DEPÓSITO', valor, '-'); showPrint(true);
         /* ZERANDO CAMPO VALOR PARA EVITAR DEPÓSITO DUPLICADO */ 
-        inpValor.value = '';
-        btn_deposito.disable = false;
+        Valor.value = '';
+        btn.disabled = false;
       }else{ setStatus('statusOps','Erro: ' + (js.msg||'desconhecido')); }
     }catch(e){ setStatus('statusOps','Erro de rede/JS.'); console.error(e); }
   }
 
   async function enviarPix(){
     if(!contaAtual.id){ setStatus('statusOps','Entre com a conta primeiro.'); return; }
+
+    const btn = document.getElementById('btn_pix');
     var valor = Number(document.getElementById('inpValor').value||0);
+    
     var destinoPix = document.getElementById('inpPix').value.trim();
     if(!valor || valor<=0){ setStatus('statusOps','Informe um valor válido.'); return; }
     if(!destinoPix){ setStatus('statusOps','Informe a chave PIX de destino.'); return; }
     try{
-    btn_pix.disabled = true; // desabilita o botão, evita novas clicadas
+    btn.disabled = true; // desabilita o botão, evita novas clicadas
     setStatus('statusOps','Processando depósito...');
       var res = await fetch(API, {
         method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
@@ -293,7 +298,7 @@
         ticket('PIX', valor, 'Para ' + destinoPix); showPrint(true);
          /* ZERANDO CAMPO VALOR PARA EVITAR PIX DUPLICADO */ 
         inpValor.value = '';
-         btn_pix.disabled = false; // habilita o botão, evita novas clicadas
+        btn.disabled = false; // habilita o botão, evita novas clicadas
       }else{ setStatus('statusOps','Erro: ' + (js.msg||'desconhecido')); }
     }catch(e){ setStatus('statusOps','Erro de rede/JS.'); console.error(e); }
   }
@@ -310,6 +315,7 @@
 </script>
 </body>
 </html>
+
 
 
 
