@@ -292,32 +292,70 @@
   }
 
   async function enviarPix(){
-    if(!contaAtual.id){ setStatus('statusOps','Entre com a conta primeiro.'); return; }
+    if(!contaAtual.id){
+    setStatus('statusOps','Entre com a conta primeiro.');
+    return;
+  }
 
-    const btn = document.getElementById('btn_pix');
-    var valor = Number(document.getElementById('inpValor').value||0);
-    
-    var destinoPix = document.getElementById('inpPix').value.trim();
-    if(!valor || valor<=0){ setStatus('statusOps','Informe um valor válido.'); return; }
-    if(!destinoPix){ setStatus('statusOps','Informe a chave PIX de destino.'); return; }
-    try{
-    btn.disabled = true; // desabilita o botão, evita novas clicadas
-    setStatus('statusOps','Processando depósito...');
-      var res = await fetch(API, {
-        method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
-        body: JSON.stringify({ action:'pix', origem:String(contaAtual.id), destino_pix:String(destinoPix), valor:valor, descricao:'PIX aluno' })
-      });
-      if(!res.ok){ setStatus('statusOps','Falha (HTTP ' + res.status + ').'); return; }
-      var js = await res.json();
-      if(js.ok){
-        contaAtual.saldo = Number((js.origem && js.origem.saldo) || contaAtual.saldo);
-        telaSaldo(); setStatus('statusOps','PIX enviado.');
-        ticket('PIX', valor, 'Para ' + destinoPix); showPrint(true);
-         /* ZERANDO CAMPO VALOR PARA EVITAR PIX DUPLICADO */ 
-        inpValor.value = '';
-        btn.disabled = false; // habilita o botão, evita novas clicadas
-      }else{ setStatus('statusOps','Erro: ' + (js.msg||'desconhecido')); }
-    }catch(e){ setStatus('statusOps','Erro de rede/JS.'); console.error(e); }
+  const btn = document.getElementById('btn_pix');
+  const elValor = document.getElementById('inpValor');
+  const elPix = document.getElementById('inpPix');
+
+  const valor = Number(elValor.value || 0);
+  const destinoPix = elPix.value.trim();
+
+  if(!valor || valor <= 0){
+    setStatus('statusOps','Informe um valor válido.');
+    return;
+  }
+  if(!destinoPix){
+    setStatus('statusOps','Informe a chave PIX de destino.');
+    return;
+  }
+
+  btn.disabled = true; // 🔒 desabilita o botão
+  setStatus('statusOps','Processando PIX...');
+
+  try{
+    const res = await fetch(API, {
+      method:'POST',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify({
+        action: 'pix',
+        origem: String(contaAtual.id),
+        destino_pix: String(destinoPix),
+        valor: valor,
+        descricao: 'PIX aluno'
+      })
+    });
+
+    if(!res.ok){
+      setStatus('statusOps','Falha (HTTP ' + res.status + ').');
+      return;
+    }
+
+    const js = await res.json();
+
+    if(js.ok){
+      contaAtual.saldo = Number((js.origem && js.origem.saldo) || contaAtual.saldo);
+      telaSaldo();
+      setStatus('statusOps','PIX enviado com sucesso!');
+      ticket('PIX', valor, 'Para ' + destinoPix);
+      showPrint(true);
+
+      // ✅ limpa campos após sucesso
+      elValor.value = '';
+      elPix.value = '';
+    } else {
+      setStatus('statusOps','Erro: ' + (js.msg || 'desconhecido'));
+    }
+
+  } catch(e) {
+    setStatus('statusOps','Erro de rede ou JS.');
+    console.error(e);
+  } finally {
+    btn.disabled = false; // reabilita o botão sempre
+  }
   }
 
   /* ====== TICKET ====== */
@@ -332,6 +370,7 @@
 </script>
 </body>
 </html>
+
 
 
 
