@@ -264,6 +264,8 @@
         contaAtual.saldo = Number(js.saldo||0);
         telaSaldo(); setStatus('statusOps','Depósito registrado.');
         ticket('DEPÓSITO', valor, '-'); showPrint(true);
+        /* ZERANDO CAMPO VALOR PARA EVITAR DEPÓSITO DUPLICADO */ 
+        inpValor.value = '';
       }else{ setStatus('statusOps','Erro: ' + (js.msg||'desconhecido')); }
     }catch(e){ setStatus('statusOps','Erro de rede/JS.'); console.error(e); }
   }
@@ -285,6 +287,8 @@
         contaAtual.saldo = Number((js.origem && js.origem.saldo) || contaAtual.saldo);
         telaSaldo(); setStatus('statusOps','PIX enviado.');
         ticket('PIX', valor, 'Para ' + destinoPix); showPrint(true);
+         /* ZERANDO CAMPO VALOR PARA EVITAR PIX DUPLICADO */ 
+        inpValor.value = '';
       }else{ setStatus('statusOps','Erro: ' + (js.msg||'desconhecido')); }
     }catch(e){ setStatus('statusOps','Erro de rede/JS.'); console.error(e); }
   }
@@ -301,6 +305,7 @@
 </script>
 </body>
 </html>
+
 
 
 
