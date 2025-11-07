@@ -250,28 +250,45 @@
   }
 
   async function deposito(){
-    if(!contaAtual.id){ setStatus('statusOps','Entre com a conta primeiro.'); return; }
-    
-    const btn = document.getElementById('btn_deposito');
-    var valor = Number(document.getElementById('inpValor').value||0);
-    if(!valor || valor<=0){ setStatus('statusOps','Informe um valor válido.'); return; }
-    try{
-      btn.disabled = true; /* desabilita botão para evitar valores duplicados */
-      var res = await fetch(API, {
-        method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
-        body: JSON.stringify({ action:'deposito', id:String(contaAtual.id), valor:valor, descricao:'DEP aluno' })
-      });
-      if(!res.ok){ setStatus('statusOps','Falha (HTTP ' + res.status + ').'); return; }
-      var js = await res.json();
-      if(js.ok){
-        contaAtual.saldo = Number(js.saldo||0);
-        telaSaldo(); setStatus('statusOps','Depósito registrado.');
-        ticket('DEPÓSITO', valor, '-'); showPrint(true);
-        /* ZERANDO CAMPO VALOR PARA EVITAR DEPÓSITO DUPLICADO */ 
-        Valor.value = '';
-        btn.disabled = false;
-      }else{ setStatus('statusOps','Erro: ' + (js.msg||'desconhecido')); }
-    }catch(e){ setStatus('statusOps','Erro de rede/JS.'); console.error(e); }
+
+  if(!contaAtual.id){ setStatus('statusOps','Entre com a conta primeiro.'); return; }
+
+  const elValor = document.getElementById('inpValor');
+  const btn     = document.getElementById('btn_deposito'); // <— pega o botão
+
+  const valor = Number(elValor.value || 0);
+  if(!valor || valor <= 0){ setStatus('statusOps','Informe um valor válido.'); return; }
+
+  btn.disabled = true;                       // <— desabilita (correto)
+  setStatus('statusOps','Processando depósito...');
+
+  try{
+    const res = await fetch(API, {
+      method:'POST',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify({ action:'deposito', id:String(contaAtual.id), valor:valor, descricao:'DEP aluno' })
+    });
+    if(!res.ok){ setStatus('statusOps','Falha (HTTP ' + res.status + ').'); return; }
+
+    const js = await res.json();
+    if(js.ok){
+      contaAtual.saldo = Number(js.saldo||0);
+      telaSaldo();
+      setStatus('statusOps','Depósito registrado.');
+      ticket('DEPÓSITO', valor, '-'); 
+      showPrint(true);
+      elValor.value = '';                    // <— limpa o campo (correto)
+      elValor.blur();                        // opcional: tira foco
+    }else{
+      setStatus('statusOps','Erro: ' + (js.msg||'desconhecido'));
+    }
+  }catch(e){
+    setStatus('statusOps','Erro de rede/JS.');
+    console.error(e);
+  }finally{
+    btn.disabled = false;                    // <— reabilita SEMPRE
+  }
+
   }
 
   async function enviarPix(){
@@ -315,6 +332,7 @@
 </script>
 </body>
 </html>
+
 
 
 
