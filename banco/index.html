@@ -133,8 +133,8 @@
 
       <!-- actions -->
       <div class="row">
-        <button class="btn primary" onclick="deposito()">Depositar</button>
-        <button class="btn danger"  onclick="enviarPix()">Enviar PIX</button>
+        <button id='btn_deposito' class="btn primary" onclick="deposito()">Depositar</button>
+        <button id='btn_pix' class="btn danger"  onclick="enviarPix()">Enviar PIX</button>
         <button class="btn ghost"   onclick="verSaldo()">Saldo</button>
         <button class="btn" style="background:#333;color:#fff" onclick="logout()">Encerrar</button>
       </div>
@@ -277,6 +277,8 @@
     if(!valor || valor<=0){ setStatus('statusOps','Informe um valor válido.'); return; }
     if(!destinoPix){ setStatus('statusOps','Informe a chave PIX de destino.'); return; }
     try{
+    btn_deposito.disabled = true; // desabilita o botão, evita novas clicadas
+    setStatus('statusOps','Processando depósito...');
       var res = await fetch(API, {
         method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
         body: JSON.stringify({ action:'pix', origem:String(contaAtual.id), destino_pix:String(destinoPix), valor:valor, descricao:'PIX aluno' })
@@ -289,6 +291,7 @@
         ticket('PIX', valor, 'Para ' + destinoPix); showPrint(true);
          /* ZERANDO CAMPO VALOR PARA EVITAR PIX DUPLICADO */ 
         inpValor.value = '';
+         btn_deposito.disabled = false; // habilita o botão, evita novas clicadas
       }else{ setStatus('statusOps','Erro: ' + (js.msg||'desconhecido')); }
     }catch(e){ setStatus('statusOps','Erro de rede/JS.'); console.error(e); }
   }
@@ -305,6 +308,7 @@
 </script>
 </body>
 </html>
+
 
 
 
