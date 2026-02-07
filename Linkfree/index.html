@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Link Hub</title>
+  <meta name="description" content="Contatos, redes sociais e projetos em um só lugar." />
+  <link rel="icon" href="assets/avatar.jpg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+
+<body>
+  <div class="bg-blur"></div>
+
+  <header class="topbar">
+    <!--<button id="themeBtn" class="iconbtn" aria-label="Alternar tema" title="Alternar tema">
+      <span id="themeIcon" aria-hidden="true">🌙</span>
+    </button>-->
+  </header>
+
+  <main class="wrap">
+    <section class="hero card">
+      <div class="hero-left">
+        <img id="avatar" class="avatar" src="/assets/avatar.jpg" alt="Foto/Logo" />
+
+        <div class="banner-title">
+           <p class="line1"></p>
+            <p class="line2"></p>
+        </div>
+      </div>
+      <div class="hero-right">
+        <div class="name-row">
+          <h1 id="name">Seu Nome</h1>
+       <span id="verified" class="badge" hidden>✓ verificado</span>
+        </div>
+
+        <p id="bio" class="bio"></p>
+
+        <div id="chips" class="chips"></div>
+
+        <div class="cta-row">
+          <a id="primaryCta" class="btn primary" href="#" target="_blank" rel="noopener" hidden>Principal</a>
+          <button id="shareBtn" class="btn ghost" type="button">Compartilhar</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="sections"></section>
+
+    <footer class="footer">
+      <p id="footerText"></p>
+      <p class="tiny">Feito com ❤️ — disponível no GitHub Pages.</p>
+    </footer>
+  </main>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
