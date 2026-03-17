@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mini Jogo: Arquivos e Pastas</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, #eef7ff 0%, #ffffff 100%);
+      color: #1f2937;
+    }
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .header h1 {
+      margin: 0 0 8px;
+      font-size: 2rem;
+      color: #1d4ed8;
+    }
+    .header p {
+      margin: 0;
+      font-size: 1.05rem;
+    }
+    .panel {
+      background: #fff;
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      margin-bottom: 20px;
+    }
+    .topbar {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      text-align: center;
+      margin-bottom: 18px;
+    }
+    .stat {
+      background: #eff6ff;
+      border: 2px solid #bfdbfe;
+      border-radius: 16px;
+      padding: 12px;
+      font-weight: bold;
+    }
+    .game-area {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .items-area h2,
+    .folders-area h2 {
+      margin-top: 0;
+      color: #2563eb;
+    }
+    .items {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 12px;
+      min-height: 180px;
+    }
+    .item {
+      background: #f9fafb;
+      border: 2px dashed #94a3b8;
+      border-radius: 16px;
+      padding: 14px 10px;
+      text-align: center;
+      cursor: grab;
+      user-select: none;
+      transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+      font-size: 1rem;
+    }
+    .item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+      background: #ffffff;
+    }
+    .item .emoji {
+      font-size: 2rem;
+      display: block;
+      margin-bottom: 8px;
+    }
+    .folders {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    .folder {
+      background: #fff7ed;
+      border: 3px solid #fdba74;
+      border-radius: 18px;
+      padding: 14px;
+      min-height: 120px;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .folder.dragover {
+      background: #ffedd5;
+      transform: scale(1.01);
+    }
+    .folder h3 {
+      margin: 0 0 10px;
+      color: #c2410c;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .folder-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      min-height: 48px;
+    }
+    .mini {
+      background: #ffffff;
+      border: 2px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 8px 10px;
+      font-size: 0.95rem;
+    }
+    .controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 10px;
+    }
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 12px 18px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.15s, opacity 0.15s;
+    }
+    button:hover { transform: translateY(-1px); }
+    .btn-primary {
+      background: #2563eb;
+      color: white;
+    }
+    .btn-secondary {
+      background: #e5e7eb;
+      color: #111827;
+    }
+    .message {
+      text-align: center;
+      font-size: 1.1rem;
+      font-weight: bold;
+      min-height: 28px;
+      margin-top: 8px;
+    }
+    .success { color: #15803d; }
+    .error { color: #b91c1c; }
+    .teacher-box {
+      background: #f0fdf4;
+      border: 2px solid #86efac;
+      border-radius: 18px;
+      padding: 16px;
+      margin-top: 18px;
+    }
+    .teacher-box h3 {
+      margin-top: 0;
+      color: #166534;
+    }
+    .footer-note {
+      text-align: center;
+      margin-top: 16px;
+      color: #475569;
+      font-size: 0.95rem;
+    }
+    @media (max-width: 820px) {
+      .game-area {
+        grid-template-columns: 1fr;
+      }
+      .topbar {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>📁 Mini Jogo: Arquivos e Pastas</h1>
+      <p>Arraste cada arquivo para a pasta correta e organize o computador!</p>
+    </div>
+
+    <div class="panel">
+      <div class="topbar">
+        <div class="stat">⭐ Pontos: <span id="score">0</span></div>
+        <div class="stat">✅ Acertos: <span id="hits">0</span></div>
+        <div class="stat">📦 Restantes: <span id="remaining">0</span></div>
+      </div>
+
+      <div class="game-area">
+        <div class="items-area">
+          <h2>Arquivos soltos</h2>
+          <div class="items" id="items"></div>
+        </div>
+
+        <div class="folders-area">
+          <h2>Pastas</h2>
+          <div class="folders" id="folders"></div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button class="btn-primary" onclick="resetGame()">🔄 Reiniciar jogo</button>
+        <button class="btn-secondary" onclick="shuffleItems()">🎲 Misturar arquivos</button>
+      </div>
+
+      <div class="message" id="message"></div>
+
+      <div class="teacher-box">
+        <h3>👩‍🏫 Como usar na aula</h3>
+        <p>Peça para os alunos observarem o nome e o desenho de cada arquivo. Depois, eles devem arrastar para a pasta correta: <strong>Imagens</strong>, <strong>Textos</strong>, <strong>Músicas</strong>, <strong>Vídeos</strong> ou <strong>Jogos</strong>.</p>
+      </div>
+
+      <div class="footer-note">
+        Dica: depois do jogo, converse com a turma sobre como o sistema operacional ajuda a organizar arquivos e pastas.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const initialItems = [
+      { id: 1, name: 'Foto da escola', emoji: '🖼️', folder: 'Imagens' },
+      { id: 2, name: 'Desenho.png', emoji: '🎨', folder: 'Imagens' },
+      { id: 3, name: 'Bilhete.txt', emoji: '📝', folder: 'Textos' },
+      { id: 4, name: 'História.doc', emoji: '📄', folder: 'Textos' },
+      { id: 5, name: 'Canção.mp3', emoji: '🎵', folder: 'Músicas' },
+      { id: 6, name: 'Som da aula', emoji: '🎶', folder: 'Músicas' },
+      { id: 7, name: 'Vídeo da turma', emoji: '🎬', folder: 'Vídeos' },
+      { id: 8, name: 'Aula.mp4', emoji: '📹', folder: 'Vídeos' },
+      { id: 9, name: 'Jogo da memória', emoji: '🎮', folder: 'Jogos' },
+      { id: 10, name: 'Corrida divertida', emoji: '🕹️', folder: 'Jogos' }
+    ];
+
+    const folderNames = ['Imagens', 'Textos', 'Músicas', 'Vídeos', 'Jogos'];
+
+    let items = [];
+    let score = 0;
+    let hits = 0;
+
+    const itemsEl = document.getElementById('items');
+    const foldersEl = document.getElementById('folders');
+    const scoreEl = document.getElementById('score');
+    const hitsEl = document.getElementById('hits');
+    const remainingEl = document.getElementById('remaining');
+    const messageEl = document.getElementById('message');
+
+    function speak(text) {
+      if ('speechSynthesis' in window) {
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.lang = 'pt-BR';
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(utter);
+      }
+    }
+
+    function updateStats() {
+      scoreEl.textContent = score;
+      hitsEl.textContent = hits;
+      remainingEl.textContent = items.length;
+    }
+
+    function setMessage(text, type = '') {
+      messageEl.textContent = text;
+      messageEl.className = 'message ' + type;
+    }
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    function renderItems() {
+      itemsEl.innerHTML = '';
+      items.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'item';
+        div.draggable = true;
+        div.dataset.id = item.id;
+        div.innerHTML = `<span class="emoji">${item.emoji}</span>${item.name}`;
+
+        div.addEventListener('dragstart', e => {
+          e.dataTransfer.setData('text/plain', item.id);
+        });
+
+        itemsEl.appendChild(div);
+      });
+    }
+
+    function renderFolders() {
+      foldersEl.innerHTML = '';
+      folderNames.forEach(name => {
+        const folder = document.createElement('div');
+        folder.className = 'folder';
+        folder.dataset.folder = name;
+        folder.innerHTML = `
+          <h3>📁 ${name}</h3>
+          <div class="folder-items" id="folder-${name}"></div>
+        `;
+
+        folder.addEventListener('dragover', e => {
+          e.preventDefault();
+          folder.classList.add('dragover');
+        });
+
+        folder.addEventListener('dragleave', () => {
+          folder.classList.remove('dragover');
+        });
+
+        folder.addEventListener('drop', e => {
+          e.preventDefault();
+          folder.classList.remove('dragover');
+          const id = Number(e.dataTransfer.getData('text/plain'));
+          checkDrop(id, name);
+        });
+
+        foldersEl.appendChild(folder);
+      });
+    }
+
+    function checkDrop(id, folderName) {
+      const item = items.find(i => i.id === id);
+      if (!item) return;
+
+      if (item.folder === folderName) {
+        score += 10;
+        hits += 1;
+        items = items.filter(i => i.id !== id);
+        const target = document.getElementById(`folder-${folderName}`);
+        const mini = document.createElement('div');
+        mini.className = 'mini';
+        mini.textContent = `${item.emoji} ${item.name}`;
+        target.appendChild(mini);
+        setMessage(`Muito bem! "${item.name}" vai na pasta ${folderName}.`, 'success');
+        speak('Muito bem! Você acertou.');
+      } else {
+        score = Math.max(0, score - 5);
+        setMessage(`Ops! "${item.name}" não pertence à pasta ${folderName}.`, 'error');
+        speak('Ops! Tente outra pasta.');
+      }
+
+      renderItems();
+      updateStats();
+      checkEnd();
+    }
+
+    function checkEnd() {
+      if (items.length === 0) {
+        setMessage('Parabéns! Você organizou todos os arquivos!', 'success');
+        speak('Parabéns! Você organizou todos os arquivos.');
+      }
+    }
+
+    function resetGame() {
+      items = shuffle([...initialItems]);
+      score = 0;
+      hits = 0;
+      renderFolders();
+      renderItems();
+      updateStats();
+      setMessage('Novo jogo iniciado! Organize os arquivos nas pastas corretas.');
+    }
+
+    function shuffleItems() {
+      items = shuffle([...items]);
+      renderItems();
+      setMessage('Arquivos misturados! Agora organize com atenção.');
+    }
+
+    resetGame();
+  </script>
+</body>
+</html>
