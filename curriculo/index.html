@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Currículo de Computação</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f4f7fb;
+    }
+
+    header {
+      background: linear-gradient(135deg, #0d6efd, #084298);
+      color: white;
+      padding: 18px;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    nav {
+      background: white;
+      padding: 12px;
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      flex-wrap: wrap;
+      position: sticky;
+      top: 68px;
+      z-index: 999;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    .grupo {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .grupo strong {
+      color: #084298;
+      margin-right: 6px;
+    }
+
+    button {
+      border: none;
+      background: #0d6efd;
+      color: white;
+      padding: 9px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background: #084298;
+    }
+
+    main {
+      padding: 20px;
+    }
+
+    iframe {
+      width: 100%;
+      height: calc(100vh - 170px);
+      border: none;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>Currículo de Computação - Passo de Torres</h1>
+  </header>
+
+  <nav>
+    <div class="grupo">
+      <strong>Fundamental 1:</strong>
+      <button onclick="carregarPagina('1_ano.html')">1º Ano</button>
+      <button onclick="carregarPagina('2_ano.html')">2º Ano</button>
+      <button onclick="carregarPagina('3_ano.html')">3º Ano</button>
+      <button onclick="carregarPagina('4_ano.html')">4º Ano</button>
+      <button onclick="carregarPagina('5_ano.html')">5º Ano</button>
+    </div>
+
+    <div class="grupo">
+      <strong>Fundamental 2:</strong>
+      <button onclick="carregarPagina('6_ano.html')">6º Ano</button>
+      <button onclick="carregarPagina('7_ano.html')">7º Ano</button>
+      <button onclick="carregarPagina('8_ano.html')">8º Ano</button>
+      <button onclick="carregarPagina('9_ano.html')">9º Ano</button>
+    </div>
+  </nav>
+
+  <main>
+    <iframe id="conteudo" src="2_ano.html"></iframe>
+  </main>
+
+  <script>
+    function carregarPagina(pagina) {
+      document.getElementById("conteudo").src = pagina;
+    }
+  </script>
+
+</body>
+</html>
