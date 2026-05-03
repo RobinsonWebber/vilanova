@@ -250,30 +250,52 @@ let alunos = [];
       else alert("Aluno não encontrado.");
     }
 
-    async function salvarNoSheets(avancarDepois = false) {
-      if (!API_URL || API_URL.includes("COLE_A_URL")) {
-        alert("https://script.google.com/macros/s/AKfycbyPbt0FiY62_0t9_xQb9FWVRdXHj9eel1Zq5vSWaUIEn-RmJPdAGVPO9bKev93fztvT/exec");
-        return;
-      }
-
-      const dados = coletarDados();
-
-      try {
-        await fetch(API_URL, {
-          method: "POST",
-          mode: "no-cors",
-          body: JSON.stringify(dados)
-        });
-
-        alert("Enviado para o Google Sheets. Confira a planilha.");
-        await carregarAvaliacoes();
-
-        if (avancarDepois) proximoAluno();
-      } catch (err) {
-        alert("Erro ao enviar.");
-        console.error(err);
-      }
+    function toggleSidebar() {
+      const app = document.querySelector(".app");
+      app.classList.toggle("collapsed");
     }
+
+    async function salvarNoSheets(avancarDepois = false) {
+  if (!API_URL || API_URL.includes("COLE_A_URL")) {
+    alert("Configure a URL do Apps Script no config.js");
+    return;
+  }
+
+  const dados = coletarDados();
+
+  try {
+    const resposta = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8"
+      },
+      body: JSON.stringify(dados)
+    });
+
+    const resultado = await resposta.json();
+
+    if (resultado.status !== "ok") {
+      alert("Erro ao salvar: " + (resultado.mensagem || "erro desconhecido"));
+      return;
+    }
+
+    if (resultado.tipo === "novo") {
+      alert("➕ Novo registro criado!");
+    } else if (resultado.tipo === "atualizado") {
+      alert("♻️ Registro atualizado!");
+    } else {
+      alert("✔️ Salvo com sucesso!");
+    }
+
+    await carregarAvaliacoes();
+
+    if (avancarDepois) proximoAluno();
+
+  } catch (err) {
+    console.error("Erro ao enviar:", err);
+    alert("Erro ao enviar.");
+  }
+}
 
     ["observacoes", "nomeAluno", "idAluno", "turmaAluno", "trimestre"].forEach(id => {
       document.getElementById(id).addEventListener("input", atualizarPreview);

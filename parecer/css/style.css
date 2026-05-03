@@ -400,3 +400,33 @@
       .stats { justify-content: flex-start; }
       .categories { grid-template-columns: 1fr; }
     }
+
+      .toggle-sidebar {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      z-index: 999;
+      background: #1e293b;
+      color: #fff;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    /* Sidebar normal */
+    .sidebar {
+      transition: all 0.3s ease;
+    }
+
+    /* Sidebar recolhida */
+    .sidebar.collapsed {
+      width: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    /* Ajuste do layout quando recolher */
+    .app.collapsed .sidebar {
+     width: 0;
+    }

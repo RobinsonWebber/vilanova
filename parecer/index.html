@@ -5,37 +5,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Avaliação Inteligente</title>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    .app.no-sidebar {
+      grid-template-columns: 1fr !important;
+    }
+
+    .app.no-sidebar main {
+      max-width: 1380px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .app.no-sidebar .mobile-brand {
+      display: flex;
+      margin-bottom: 16px;
+    }
+
+    .compat-hidden {
+      display: none !important;
+    }
+  </style>
 </head>
 <body>
-  <div class="app">
-    
-    <aside class="sidebar">
-      <div class="brand">
-        <div class="logo">🧠</div>
-        <div>
-          <h1>Avaliação Inteligente</h1>
-          <span>Pareceres com IA</span>
-        </div>
-      </div>
+  <div class="compat-hidden" aria-hidden="true">
+    <span id="sideNome"></span>
+    <span id="sideId"></span>
+    <span id="sideTurma"></span>
+    <span id="sideCount"></span>
+  </div>
 
-      <div class="student-card">
-        <small>Aluno atual</small>
-        <strong id="sideNome">Carregando...</strong>
-        <div class="pill-row">
-          <span class="pill" id="sideId">ID --</span>
-          <span class="pill" id="sideTurma">Turma --</span>
-          <span class="pill" id="sideCount">0 marcadores</span>
-        </div>
-      </div>
-
-      <div class="menu">
-        <button class="active">☑️ Avaliação</button>
-        <button>📄 Parecer</button>
-        <button>☁️ Google Sheets</button>
-        <button>⚙️ Configurações</button>
-      </div>
-    </aside>
-   
+  <div class="app no-sidebar">
     <main>
       <div class="brand mobile-brand">
         <div class="logo">🧠</div>
@@ -44,7 +43,6 @@
           <span>Pareceres com IA</span>
         </div>
       </div>
-
       <div class="topbar">
         <div class="field">
           <label>Pesquisar aluno</label>
@@ -69,7 +67,15 @@
           <div class="stat"><strong>IA</strong><span>pronto</span></div>
         </div>
       </section>
-
+       
+      <div class="nav nav-top">
+      <button class="btn" onclick="primeiroAluno()">|&lt;</button>
+      <button class="btn" onclick="alunoAnterior()">&lt;</button>
+      <button class="btn" onclick="proximoAluno()">&gt;</button>
+      <button class="btn" onclick="ultimoAluno()">&gt;|</button>
+      <button class="btn primary" onclick="novoRegistro()">+ Novo</button>
+      </div>
+      
       <section class="student-form">
         <div class="field">
           <label>ID</label>
