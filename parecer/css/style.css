@@ -430,12 +430,15 @@
     .app.collapsed .sidebar {
      width: 0;
     }
-      .brand h1 {
-        font-size: 28px; /* aumenta aqui */
-        font-weight: 700;
-      }
-      
-      .brand span {
-        font-size: 14px; /* subtítulo */
-        opacity: 0.8;
-      }
+
+ /* texto cabeçalho */
+ .brand h1 {
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.brand span {
+  font-size: 16px;
+  color: #94a3b8; /* tom mais suave */
+}
