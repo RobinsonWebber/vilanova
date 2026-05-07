@@ -66,14 +66,23 @@
           <div class="stat"><strong id="totalSelecionados">0</strong><span>selecionados</span></div>
           <div class="stat"><strong>IA</strong><span>pronto</span></div>
         </div>
+        
+      <div class="stat progress-card">
+      <strong id="percentualAvaliacoes">0%</strong>
+      <span>Avaliações concluídas</span>
+      <div class="progress-bar">
+        <div id="barraAvaliacoes"></div>
+      </div>
+      </div> 
+
       </section>
        
       <div class="nav nav-top">
-      <button class="btn" onclick="primeiroAluno()">|&lt;</button>
-      <button class="btn" onclick="alunoAnterior()">&lt;</button>
-      <button class="btn" onclick="proximoAluno()">&gt;</button>
-      <button class="btn" onclick="ultimoAluno()">&gt;|</button>
-      <button class="btn primary" onclick="novoRegistro()">+ Novo</button>
+      <button class="btn" onclick="primeiroAluno()">⏮</button>
+      <button class="btn" onclick="alunoAnterior()">◀</button>
+      <button class="btn" onclick="proximoAluno()">▶</button>
+      <button class="btn" onclick="ultimoAluno()">⏭</button>
+      <button class="btn primary" onclick="novoRegistro()">＋ Novo</button>
       </div>
       
       <section class="student-form">
@@ -151,11 +160,11 @@
       </div>
 
       <div class="nav">
-        <button class="btn" onclick="primeiroAluno()">|&lt; Primeiro</button>
-        <button class="btn" onclick="alunoAnterior()">&lt;&lt; Anterior</button>
-        <button class="btn" onclick="proximoAluno()">Próximo &gt;&gt;</button>
-        <button class="btn" onclick="ultimoAluno()">Último &gt;|</button>
-        <button class="btn primary" onclick="novoRegistro()">+ Novo registro</button>
+      <button class="btn" onclick="primeiroAluno()">⏮</button>
+      <button class="btn" onclick="alunoAnterior()">◀</button>
+      <button class="btn" onclick="proximoAluno()">▶</button>
+      <button class="btn" onclick="ultimoAluno()">⏭</button>
+      <button class="btn primary" onclick="novoRegistro()">＋ Novo</button>
       </div>
     </main>
   </div>

@@ -142,12 +142,15 @@ let alunos = [];
     async function carregarAvaliacoes() {
       const res = await fetch(`${API_URL}?acao=avaliacoes`);
       avaliacoes = await res.json();
+
+      atualizarProgressoAvaliacoes();
     }
 
     async function iniciarSistema() {
         try {
         await carregarAlunos();
         await carregarAvaliacoes();
+        atualizarProgressoAvaliacoes();
 
         console.log("Alunos carregados:", alunos);
 
@@ -254,6 +257,29 @@ let alunos = [];
       const app = document.querySelector(".app");
       app.classList.toggle("collapsed");
     }
+
+  function atualizarProgressoAvaliacoes() {
+  if (!Array.isArray(alunos) || !Array.isArray(avaliacoes)) return;
+
+  const trimestreAtual = document.getElementById("trimestre").value;
+  const turmaAtual = document.getElementById("turmaBusca").value || document.getElementById("turmaAluno").value;
+
+  const alunosTurma = alunos.filter(a => String(a.turma) === String(turmaAtual));
+
+  const avaliados = alunosTurma.filter(aluno =>
+    avaliacoes.some(av =>
+      String(av.id_aluno) === String(aluno.id) &&
+      String(av.trimestre) === String(trimestreAtual)
+    )
+  );
+
+  const total = alunosTurma.length;
+  const concluidas = avaliados.length;
+  const percentual = total > 0 ? Math.round((concluidas / total) * 100) : 0;
+
+  document.getElementById("percentualAvaliacoes").textContent = `${percentual}%`;
+  document.getElementById("barraAvaliacoes").style.width = `${percentual}%`;
+}
 
     async function salvarNoSheets(avancarDepois = false) {
   if (!API_URL || API_URL.includes("COLE_A_URL")) {

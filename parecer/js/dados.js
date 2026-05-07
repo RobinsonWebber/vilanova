@@ -9,7 +9,8 @@ const itensAvaliativos = [
           "Cumpre combinados da aula",
           "Coopera com o grupo",
           "Apresenta conflitos pontuais",
-          "Necessita mediação em alguns momentos"
+          "Necessita mediação em alguns momentos",
+          "Atrapalha a aula com frequencia"
         ]
       },
       {
@@ -20,7 +21,7 @@ const itensAvaliativos = [
           "Demonstra interesse pelos conteúdos",
           "Faz perguntas e compartilha ideias",
           "Precisa de incentivo para participar",
-          "Participa de forma irregular"
+          "Participa de forma irregular"     
         ]
       },
       {
@@ -30,7 +31,9 @@ const itensAvaliativos = [
           "Mantém atenção durante as atividades",
           "Oscila entre foco e distração",
           "Distrai-se com facilidade",
-          "Necessita mediação para manter o foco"
+          "Necessita mediação para manter o foco",
+          "Necessita de chamados frequentes",
+          "Tem dificuldade em permacer sentado"
         ]
       },
       {
@@ -41,7 +44,8 @@ const itensAvaliativos = [
           "Compreende os conteúdos com apoio",
           "Apresenta dúvidas frequentes",
           "Necessita retomadas durante as atividades",
-          "Apresenta dificuldade significativa"
+          "Apresenta dificuldade significativa",
+          "Necessita de auxilio do professor para concluir as atividades"
         ]
       },
       {
@@ -70,9 +74,9 @@ const itensAvaliativos = [
         titulo: "Coordenação e uso de recursos",
         icone: "🖱️",
         opcoes: [
-          "Utiliza bem mouse e teclado",
+          "Consegue fazer uso satisfatório dos recursos computacionais básicos",
           "Demonstra boa coordenação motora fina",
-          "Apresenta evolução no uso dos recursos",
+          "Apresenta evolução no uso dos recursos computacionais",
           "Necessita desenvolver maior precisão",
           "Apresenta dificuldade no uso dos recursos tecnológicos"
         ]
