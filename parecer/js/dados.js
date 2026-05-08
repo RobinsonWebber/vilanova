@@ -20,9 +20,10 @@ const itensAvaliativos = [
           "Participa das atividades propostas",
           "Demonstra interesse pelos conteúdos",
           "Faz perguntas e compartilha ideias",
-          "Precisa de incentivo para participar",
-          "Participa de forma irregular"     
-        ]
+          "Precisa de incentivo e etimulo constante para participar",
+          "Participa de forma irregular", 
+          "Interage pouco nas aulas"
+         ]
       },
       {
         titulo: "Atenção e foco",
