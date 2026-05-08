@@ -15,6 +15,17 @@ let alunosFiltrados = [];
 let indiceAtual = 0;
 let avaliacao = {};
 
+document.getElementById("btnRelatorio").addEventListener("click", () => {
+  //const turma = filtroTurma.value || turmaSelect.value;
+  const turma = filtroTurma.value;
+  const ano = anoSelect.value;
+  const trimestre = trimestreSelect.value;
+
+  const url = `relatorio.html?turma=${encodeURIComponent(turma)}&ano=${encodeURIComponent(ano)}&trimestre=${encodeURIComponent(trimestre)}`;
+
+  window.open(url, "_blank");
+});
+
 function iniciar() {
   carregarAnosETrimestres();
   configurarEventos();

@@ -15,52 +15,7 @@
       </div>
     </header>
 
-    <section class="card filtros">
-      <div class="card-header">
-        <h2>Pesquisa</h2>
-        <span id="contadorRegistros" class="badge">0 alunos</span>
-      </div>
-
-      <div class="grid grid-filtros">
-        <label>
-          Pesquisar aluno
-          <input id="pesquisaAluno" type="search" placeholder="Digite parte do nome..." />
-        </label>
-
-        <label>
-          Filtrar turma
-          <select id="filtroTurma">
-            <option value="">Todas as turmas</option>
-            <option value="">31</option>
-            <option value="">32</option>
-            <option value="">33</option>
-            <option value="">34</option>
-            <option value="">41</option>
-            <option value="">42</option>
-            <option value="">43</option>
-          </select>
-        </label>
-
-        <label>
-          Ano letivo
-          <select id="anoSelect"></select>
-        </label>
-
-        <label>
-          Trimestre
-          <select id="trimestreSelect"></select>
-        </label>
-      </div>
-
-      <div class="actions">
-        <button id="btnAnterior" class="secondary">◀ Anterior</button>
-        <button id="btnProximo" class="secondary">Próximo ▶</button>
-        <button id="btnLimparPesquisa" class="secondary">Limpar pesquisa</button>
-        <button id="btnRecarregarAlunos" class="secondary">Recarregar alunos</button>
-      </div>
-    </section>
-
-    <section class="card conceitos-info">
+      <section class="card conceitos-info">
     <div class="card-header">
       <h2>Legenda dos Conceitos</h2>
     </div>
@@ -86,6 +41,44 @@
     </div>
   </section>
 
+    <section class="card filtros">
+      <div class="card-header">
+        <h2>Pesquisa</h2>
+        <span id="contadorRegistros" class="badge">0 alunos</span>
+      </div>
+
+      <div class="grid grid-filtros">
+        <label>
+          Pesquisar aluno
+          <input id="pesquisaAluno" type="search" placeholder="Digite parte do nome..." />
+        </label>
+
+        <label>
+          Filtrar turma
+          <select id="filtroTurma">
+            <option value="">Todas as turmas</option>
+            <option value="31">31</option>
+            <option value="32">32</option>
+            <option value="33">33</option>
+            <option value="34">34</option>
+            <option value="41">41</option>
+            <option value="42">42</option>
+            <option value="43">43</option>
+          </select>
+        </label>
+
+        <label>
+          Ano letivo
+          <select id="anoSelect"></select>
+        </label>
+
+        <label>
+          Trimestre
+          <select id="trimestreSelect"></select>
+        </label>
+      </div>
+
+    </section>
 
     <section class="card grid">
       <label>
@@ -98,6 +91,15 @@
         <select id="alunoSelect"></select>
       </label>
     </section>
+
+    <div class="actions">
+        <button id="btnAnterior" class="secondary">◀ Anterior</button>
+        <button id="btnProximo" class="secondary">Próximo ▶</button>
+        <button id="btnLimparPesquisa" class="secondary">Limpar pesquisa</button>
+        <button id="btnRecarregarAlunos" class="secondary">Recarregar alunos</button>
+        <button id="btnRelatorio" class="secondary">Relatório</button>
+    </div>
+
 
     <section class="card">
       <div class="card-header">
