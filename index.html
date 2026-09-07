@@ -228,53 +228,73 @@
     }
 
     /* Estilos de impressão */
-    @media print {
-      @page {
-        left: 5mm;
-        width: 53mm;
-        padding: 0;
-      }
+@media print {
+  @page {
+    size: 58mm auto;
+    margin: 0;
+  }
 
-      body * {
-        visibility: hidden;
-      }
-      .print-area, .print-area * {
-        visibility: visible;
-      }
-      .print-area {
-        display: block;
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 58mm;
-        padding: 0 2mm;
-        font-family: Arial, sans-serif;
-        font-size: 9pt;
-        line-height: 1.2;
-      }
-      .card {
-        border: none;
-        box-shadow: none;
-        border-radius: 0;
-        margin: 0;
-        padding: 1mm 0;
-        font-size: 9pt;
-        line-height: 1.2;
-        text-align: left;
-      }
-      .card h3 {
-        font-size: 11pt;
-        line-height: 1.1;
-        margin: 0 0 1mm;
-      }
-      .card img {
-        width: 25mm !important;
-        height: auto !important;
-      }
-      .card hr, .print-area > hr {
-        margin: 2mm 0 !important;
-      }
-    }
+  html,
+  body {
+    width: 58mm !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+    background: white !important;
+  }
+
+  .main-container {
+    display: none !important;
+  }
+
+  .print-area {
+    display: block !important;
+    position: static !important;
+
+    /* Área útil centralizada na bobina */
+    width: 48mm !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+
+    font-family: Arial, sans-serif;
+    font-size: 9pt;
+    line-height: 1.2;
+
+    overflow: visible !important;
+  }
+
+  .card {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 1mm 0 !important;
+
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+
+    font-size: 9pt;
+    line-height: 1.2;
+    text-align: left;
+
+    break-inside: avoid;
+  }
+
+  .card h3 {
+    margin: 0 0 1mm !important;
+    font-size: 11pt;
+    line-height: 1.1;
+  }
+
+  .card img {
+    width: 25mm !important;
+    height: auto !important;
+  }
+
+  .card hr,
+  .print-area > hr {
+    margin: 2mm 0 !important;
+  }
+}
   </style>
 </head>
 <body>
