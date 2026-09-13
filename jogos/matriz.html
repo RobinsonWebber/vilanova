@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Desafio da Matriz</title>
+<style>
+body{font-family:Arial,Helvetica,sans-serif;margin:0;background:#f3f5f7;color:#222}
+.app{max-width:980px;margin:24px auto;background:#fff;border-radius:20px;padding:24px;box-shadow:0 10px 30px rgba(0,0,0,.08)}
+h1{text-align:center;margin:0 0 8px;font-size:34px}
+.subtitle{text-align:center;margin:0 0 20px;font-size:18px}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:18px}
+button{border:0;border-radius:12px;padding:12px 16px;font-size:16px;cursor:pointer;font-weight:700}
+.primary{background:#111;color:#fff}.secondary{background:#e9ecef;color:#222}
+.mode{text-align:center;font-weight:700;margin:8px 0 12px;font-size:20px}
+.question{text-align:center;font-size:28px;font-weight:800;margin:12px 0 18px}
+.board-wrap{display:grid;grid-template-columns:60px 1fr;grid-template-rows:46px auto;max-width:650px;margin:0 auto}
+.col-labels{grid-column:2;display:grid;gap:6px}
+.row-labels{grid-row:2;display:grid;gap:6px}
+.col-labels span,.row-labels span{display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px}
+.grid{grid-column:2;grid-row:2;display:grid;gap:6px}
+.cell{aspect-ratio:1/1;border:3px solid #333;border-radius:10px;background:#fff;font-size:30px;display:flex;align-items:center;justify-content:center;transition:.1s}
+.cell:hover{transform:scale(1.03)}.correct{background:#d8f5df!important}.wrong{background:#ffd8d8!important}
+.panel{margin:22px auto 0;max-width:650px;background:#f7f7f7;border-radius:14px;padding:16px}
+.feedback{text-align:center;font-size:22px;font-weight:800;min-height:30px;margin-bottom:10px}
+.answer-area{display:none;justify-content:center;gap:12px;flex-wrap:wrap}
+.answer-area label{font-weight:700}
+input{width:80px;padding:10px;font-size:18px;border:2px solid #888;border-radius:10px;text-align:center}
+.score{text-align:center;margin-top:10px;font-weight:700}.tip{text-align:center;margin-top:18px;font-size:15px}
+@media(max-width:700px){.app{margin:0;border-radius:0;min-height:100vh}h1{font-size:28px}.question{font-size:22px}.cell{font-size:24px;border-width:2px}}
+</style>
+</head>
+<body>
+<div class="app">
+<h1>🤖 DESAFIO DA MATRIZ</h1>
+<p class="subtitle">LINHAS + COLUNAS = POSIÇÕES</p>
+<div class="toolbar">
+<button id="btnClick" class="primary" onclick="setMode('click')">1. ENCONTRE A POSIÇÃO</button>
+<button id="btnLocate" class="secondary" onclick="setMode('locate')">2. DESCUBRA A COORDENADA</button>
+<button class="secondary" onclick="setSize(5)">GRADE 5×5</button>
+<button class="secondary" onclick="setSize(6)">GRADE 6×6</button>
+</div>
+<div class="mode" id="modeTitle"></div>
+<div class="question" id="question"></div>
+<div class="board-wrap">
+<div></div><div class="col-labels" id="colLabels"></div>
+<div class="row-labels" id="rowLabels"></div><div class="grid" id="grid"></div>
+</div>
+<div class="panel">
+<div class="feedback" id="feedback"></div>
+<div class="answer-area" id="answerArea">
+<label>LINHA: <input id="rowInput" type="number" min="1"></label>
+<label>COLUNA: <input id="colInput" type="number" min="1"></label>
+<button class="primary" onclick="checkCoordinate()">RESPONDER</button>
+</div>
+<div class="score" id="score"></div>
+</div>
+<p class="tip">DICA: LEIA SEMPRE NESTA ORDEM → <strong>(LINHA, COLUNA)</strong></p>
+</div>
+<script>
+let size=5, mode='click', target={row:2,col:3}, special={row:3,col:4}, score=0, attempts=0;
+function rand(n){return Math.floor(Math.random()*n)+1}
+function setSize(n){size=n;rowInput.max=n;colInput.max=n;newRound()}
+function setMode(m){
+ mode=m; score=0; attempts=0;
+ btnClick.className=m==='click'?'primary':'secondary';
+ btnLocate.className=m==='locate'?'primary':'secondary';
+ newRound();
+}
+function newRound(){
+ feedback.textContent=''; rowInput.value=''; colInput.value='';
+ if(mode==='click'){
+   target={row:rand(size),col:rand(size)};
+   modeTitle.textContent='MODO 1: ENCONTRE A POSIÇÃO';
+   question.textContent=`CLIQUE NA POSIÇÃO (${target.row}, ${target.col})`;
+   answerArea.style.display='none';
+ } else {
+   special={row:rand(size),col:rand(size)};
+   modeTitle.textContent='MODO 2: DESCUBRA A COORDENADA';
+   question.textContent='EM QUAL POSIÇÃO ESTÁ O ROBÔ?';
+   answerArea.style.display='flex';
+ }
+ buildGrid(); updateScore();
+}
+function buildGrid(){
+ grid.innerHTML=''; rowLabels.innerHTML=''; colLabels.innerHTML='';
+ grid.style.gridTemplateColumns=`repeat(${size},1fr)`;
+ grid.style.gridTemplateRows=`repeat(${size},1fr)`;
+ rowLabels.style.gridTemplateRows=`repeat(${size},1fr)`;
+ colLabels.style.gridTemplateColumns=`repeat(${size},1fr)`;
+ for(let c=1;c<=size;c++){let s=document.createElement('span');s.textContent=c;colLabels.appendChild(s)}
+ for(let r=1;r<=size;r++){let s=document.createElement('span');s.textContent=r;rowLabels.appendChild(s)}
+ const icons=['⭐','⚽','🏠','🌳','📘','🎈'];
+ for(let r=1;r<=size;r++)for(let c=1;c<=size;c++){
+   let cell=document.createElement('button');cell.className='cell';
+   if(mode==='locate'&&r===special.row&&c===special.col){cell.textContent='🤖'}
+   else if(Math.random()<.13){cell.textContent=icons[Math.floor(Math.random()*icons.length)]}
+   cell.onclick=()=>handleCellClick(cell,r,c);grid.appendChild(cell)
+ }
+}
+function handleCellClick(cell,r,c){
+ if(mode!=='click')return;
+ attempts++;
+ if(r===target.row&&c===target.col){
+   score++;cell.classList.add('correct');
+   feedback.textContent=`✅ ACERTOU! LINHA ${r}, COLUNA ${c}.`;
+   updateScore();setTimeout(newRound,900);
+ }else{
+   cell.classList.add('wrong');
+   feedback.textContent=`❌ ESSA É (${r}, ${c}). TENTE NOVAMENTE!`;
+   updateScore();setTimeout(()=>cell.classList.remove('wrong'),500);
+ }
+}
+function checkCoordinate(){
+ if(mode!=='locate')return;
+ const r=Number(rowInput.value),c=Number(colInput.value);attempts++;
+ if(r===special.row&&c===special.col){
+   score++;feedback.textContent=`✅ MUITO BEM! O ROBÔ ESTÁ EM (${r}, ${c}).`;
+   updateScore();setTimeout(newRound,1000);
+ }else{
+   feedback.textContent='❌ CONFIRA: PRIMEIRO A LINHA, DEPOIS A COLUNA.';
+   updateScore();
+ }
+}
+function updateScore(){scoreEl.textContent=`ACERTOS: ${score} | TENTATIVAS: ${attempts}`}
+const scoreEl=document.getElementById('score');
+setMode('click');
+</script>
+</body>
+</html>
