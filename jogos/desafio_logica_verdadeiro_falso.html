@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Detetives da Lógica — jogo offline</title>
+<style>
+:root{font-family:system-ui,Arial,sans-serif;color:#18324d;background:#e9f6ff}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at 10% 10%,#fff5c3,transparent 30%),radial-gradient(circle at 90% 75%,#d4e9ff,transparent 35%),#e9f6ff}.wrap{max-width:900px;margin:auto;padding:22px}.top{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}h1{margin:6px 0;font-size:clamp(1.7rem,4vw,2.7rem)}p{line-height:1.5}.pill{background:white;border:3px solid #234a70;border-radius:999px;padding:8px 14px;font-weight:800;box-shadow:3px 4px 0 #234a70}.stats{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}.card{background:white;border:4px solid #234a70;border-radius:26px;box-shadow:8px 9px 0 #a7cbe4;padding:clamp(18px,4vw,34px)}.small{font-weight:800;color:#416687;text-transform:uppercase;letter-spacing:.06em}.question{font-size:clamp(1.4rem,3.5vw,2.1rem);font-weight:800;line-height:1.4;min-height:130px;margin:20px 0}.actions{display:flex;gap:15px;flex-wrap:wrap}button{cursor:pointer;font:inherit;font-weight:900;border:3px solid #234a70;border-radius:17px;padding:16px 24px;box-shadow:4px 5px 0 #234a70;transition:transform .1s,box-shadow .1s}button:hover{transform:translateY(-2px)}button:active{transform:translateY(3px);box-shadow:1px 2px 0 #234a70}button:focus-visible{outline:4px solid #f6aa21;outline-offset:3px}button:disabled{opacity:.48;cursor:default}.true{background:#bdf1d0}.false{background:#ffd0cc}.next{background:#ffe17d}.neutral{background:#e1eaf3}.feedback{margin-top:20px;border-radius:16px;padding:17px 20px;font-size:1.08rem;line-height:1.5}.good{background:#e1f8e7;border:2px solid #388658}.bad{background:#fff0e4;border:2px solid #ce7149}.progress{height:17px;border:2px solid #234a70;background:white;border-radius:30px;overflow:hidden;margin:18px 0}.bar{height:100%;background:#5ccca2;transition:width .3s}.footer{font-size:.9rem;color:#496580;margin-top:20px}strong{font-weight:900}[hidden]{display:none!important}@media(max-width:550px){.actions button{flex:1}.card{box-shadow:5px 6px 0 #a7cbe4}.question{min-height:180px}}
+</style>
+</head>
+<body><main class="wrap">
+<div class="top"><div><div class="small">Jogo de lógica • 3º ano</div><h1>🕵️ Detetives da Lógica</h1></div><div class="pill">Funciona sem internet ✓</div></div>
+<p>Leia com atenção as palavras <strong>E, OU, NÃO</strong> e <strong>SE... ENTÃO</strong>. Descubra se cada afirmação é verdadeira ou falsa!</p>
+<div class="stats"><div class="pill" id="level">Nível 1</div><div class="pill" id="counter">Questão 1/32</div><div class="pill" id="score">Pontos: 0</div><div class="pill" id="streak">Sequência: 0</div></div>
+<div class="progress" role="progressbar" aria-label="Progresso" aria-valuemin="0" aria-valuemax="32" aria-valuenow="0"><div class="bar" id="bar"></div></div>
+<section class="card" aria-live="polite"><div class="small" id="tag">Aquecimento</div><div class="question" id="question"></div><div class="actions" id="answers"><button type="button" class="true" id="true">✅ VERDADEIRO</button><button type="button" class="false" id="false">❌ FALSO</button></div><div class="feedback" id="feedback" hidden></div><div class="actions" style="margin-top:18px"><button type="button" class="next" id="next" hidden>PRÓXIMA ➜</button><button type="button" class="neutral" id="restart">RECOMEÇAR ↻</button></div></section>
+<p class="footer">Dica para o professor: acerto vale 10 pontos, com bônus de até 5 por sequência. As questões são embaralhadas em cada nível ao recomeçar. Teclas V e F também respondem.</p>
+</main><script>
+'use strict';
+// Cada item: texto, valor lógico e explicação. O contexto explicita as hipóteses necessárias.
+const levels=[
+ {name:'Aquecimento',items:[
+ ['Um cachorro é um animal E pode ter quatro patas.',true,'As duas partes podem ser verdadeiras ao mesmo tempo.'],
+ ['Uma bicicleta comum tem duas rodas E quatro portas.',false,'Ela tem duas rodas, mas não tem quatro portas. Com E, as duas partes precisam ser verdadeiras.'],
+ ['O número 8 é maior que 5 E menor que 10.',true,'8 está entre 5 e 10.'],
+ ['O número 4 é maior que 10 OU menor que 6.',true,'4 não é maior que 10, mas é menor que 6. Com OU, uma parte verdadeira já basta.'],
+ ['O número 7 NÃO é menor que 3.',true,'7 é maior que 3.'],
+ ['O número 10 é menor que 7 OU maior que 15.',false,'As duas comparações são falsas.'],
+ ['Se hoje é segunda-feira, amanhã é terça-feira.',true,'Terça-feira vem depois de segunda-feira.'],
+ ['Um número pode ser maior que 5 E menor que 10.',true,'O número 7 é um exemplo.']
+ ]},
+ {name:'Atenção às palavras',items:[
+ ['Para cumprir a promessa “farei História E Geografia”, basta fazer História.',false,'A palavra E exige as duas atividades.'],
+ ['Para cumprir a promessa “farei História OU Geografia”, fazer apenas Geografia é suficiente.',true,'Aqui, fazer uma das atividades já cumpre a promessa.'],
+ ['O número 10 é maior que 7 OU menor que 5.',true,'A primeira parte é verdadeira.'],
+ ['Um número pode ser menor que 5 E maior que 10 ao mesmo tempo.',false,'Nenhum número satisfaz as duas condições.'],
+ ['O número 10 NÃO é maior que 10.',true,'10 é igual a 10, não maior.'],
+ ['Todo número maior que 10 também é maior que 5.',true,'Se passou de 10, passou de 5.'],
+ ['Todo número maior que 5 também é maior que 10.',false,'O número 7 é maior que 5 e não é maior que 10.'],
+ ['Se um número inteiro NÃO é maior que 10, então ele é obrigatoriamente menor que 10.',false,'Ele pode ser igual a 10.']
+ ]},
+ {name:'Semáforo e pistas',items:[
+ ['Neste jogo, o semáforo mostra apenas uma cor por vez: verde, amarela OU vermelha.',true,'Uma das três cores aparece por vez.'],
+ ['Neste jogo, um semáforo pode mostrar amarelo E vermelho ao mesmo tempo.',false,'A regra diz que aparece apenas uma cor por vez.'],
+ ['Se o semáforo está verde, então NÃO está vermelho.',true,'Ele mostra uma só cor por vez.'],
+ ['Se o semáforo NÃO está verde, então está obrigatoriamente vermelho.',false,'Ele também pode estar amarelo.'],
+ ['Se o semáforo NÃO está verde, ele pode estar amarelo OU vermelho.',true,'Essas são as outras duas cores previstas.'],
+ ['Uma caixa tem SOMENTE bolas azuis e vermelhas. Uma bola da caixa que NÃO é azul é vermelha.',true,'Como só há duas cores, a outra é vermelha.'],
+ ['Uma caixa tem bolas azuis, vermelhas e amarelas. Uma bola que NÃO é azul é obrigatoriamente vermelha.',false,'Ela pode ser amarela.'],
+ ['Ana NÃO está na sala. Podemos ter certeza de que ela está no pátio.',false,'Ela pode estar em outro lugar.']
+ ]},
+ {name:'Desafio final',items:[
+ ['Lucas é mais alto que Pedro, e Pedro é mais alto que João. Lucas é mais alto que João.',true,'A comparação continua de Lucas até João.'],
+ ['Lucas é mais velho que Pedro. Isso prova que Pedro é mais velho que João.',false,'Não recebemos nenhuma informação sobre a idade de João.'],
+ ['Todos os gatos são animais. Mimi é um gato. Logo, Mimi é um animal.',true,'Mimi pertence ao grupo dos gatos, que pertence ao grupo dos animais.'],
+ ['Todos os gatos são animais. Rex é um animal. Logo, Rex é obrigatoriamente um gato.',false,'Rex poderia ser um cachorro ou outro animal.'],
+ ['Todos os alunos que terminaram PODEM jogar. Maria está jogando. Isso prova que ela terminou.',false,'A regra dá permissão a quem terminou; não diz que somente esses alunos podem jogar.'],
+ ['SOMENTE os alunos que terminaram podem jogar. Maria está jogando. Então Maria terminou.',true,'A palavra SOMENTE impede que alguém sem terminar jogue.'],
+ ['Se um número inteiro é par, então NÃO é ímpar.',true,'Um inteiro par não é ímpar.'],
+ ['Se um número inteiro NÃO é par, então é ímpar.',true,'Todo número inteiro é par ou ímpar.']
+ ]}
+];
+const $=id=>document.getElementById(id);let deck=[],index=0,points=0,run=0,answered=false;
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function start(){deck=levels.flatMap((l,n)=>shuffle(l.items.map(item=>({item,level:n}))));index=0;points=0;run=0;answered=false;render()}
+function render(){const done=index>=deck.length;$('score').textContent='Pontos: '+points;$('streak').textContent='Sequência: '+run;$('counter').textContent=done?'Concluído!':`Questão ${index+1}/${deck.length}`;$('bar').style.width=(100*index/deck.length)+'%';document.querySelector('.progress').setAttribute('aria-valuenow',index);$('feedback').hidden=true;$('next').hidden=true;$('answers').hidden=done;answered=false;if(done){$('level').textContent='Fim do jogo';$('tag').textContent='Missão concluída';$('question').textContent=`🏆 Você fez ${points} pontos e acertou ${correctCount} de ${deck.length} desafios!`;return}let q=deck[index];$('level').textContent=`Nível ${q.level+1} de ${levels.length}`;$('tag').textContent=levels[q.level].name;$('question').textContent=q.item[0]}
+let correctCount=0;
+function answer(value){if(answered||index>=deck.length)return;answered=true;let q=deck[index],ok=value===q.item[1];if(ok){run++;correctCount++;points+=10+Math.min(run-1,5)}else run=0;let box=$('feedback');box.className='feedback '+(ok?'good':'bad');box.innerHTML=`<strong>${ok?'Acertou! 🎉':'Ainda não! 🔎'} A resposta é ${q.item[1]?'VERDADEIRO':'FALSO'}.</strong><br>`;box.append(document.createTextNode(q.item[2]));box.hidden=false;$('score').textContent='Pontos: '+points;$('streak').textContent='Sequência: '+run;$('next').textContent=index===deck.length-1?'VER RESULTADO ➜':'PRÓXIMA ➜';$('next').hidden=false;$('next').focus()}
+$('true').onclick=()=>answer(true);$('false').onclick=()=>answer(false);$('next').onclick=()=>{index++;render()};$('restart').onclick=()=>{correctCount=0;start()};document.addEventListener('keydown',e=>{if(e.altKey||e.ctrlKey||e.metaKey||e.repeat)return;if(e.key.toLowerCase()==='v')answer(true);if(e.key.toLowerCase()==='f')answer(false);if(e.key==='Enter'&&answered){index++;render()}});start();
+</script></body></html>
