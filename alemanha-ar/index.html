@@ -280,20 +280,27 @@
 
   <a-assets>
 
-    <img
-      id="img-alemao"
-      src="./alemao.png">
+    <img id="img-alemao" src="./alemao.png">
 
-      <img
-      id="img-berlim"
-      src="./berlim.png">
+    <img id="img-berlim" src="./berlim.png">
 
-      <audio
-        id="audio-alemao"
-        src="./alemao.mp3"
-        preload="auto">
-      </audio>
+    <img id="img-colonia" src="./colonia.png">
+
+    <img id="img-saxonia" src="./saxonia.png">
+
+    <img id="img-heidelberg" src="./heidelberg.png">
+
+    <img id="img-munique" src="./munique.png">
+
+    <img id="img-hamburgo" src="./hamburgo.png">
+
+    <audio
+      id="audio-alemao"
+      src="./alemao.mp3"
+      preload="auto">
+    </audio>
       
+
   </a-assets>
 
 
@@ -532,7 +539,8 @@
 
     width="1.55"
 
-    color="#FFFFFF"
+    color="#FFD700"
+    font="https://cdn.aframe.io/fonts/Roboto-msdf.json"
 
     position="0 -0.48 0.20">
   </a-text>
@@ -556,133 +564,445 @@
 
 
   <!-- =====================================================
-       TARGET 3
-       COLÔNIA
-       ===================================================== -->
+     TARGET 3 - COLÔNIA
+     CATEDRAL DE COLÔNIA
+     ===================================================== -->
 
-  <a-entity mindar-image-target="targetIndex: 3">
+<a-entity mindar-image-target="targetIndex: 3">
 
-    <a-plane
-      width="1"
-      height="0.40"
-      color="#111111"
-      opacity="0.90">
-    </a-plane>
+  <!-- CATEDRAL -->
 
-    <a-text
-      value="3 - COLONIA"
-      align="center"
-      width="2"
-      color="#FFFFFF"
-      position="0 0 0.01">
-    </a-text>
+  <a-image
+    src="#img-colonia"
 
-  </a-entity>
+    width="0.90"
+    height="1.25"
 
+    position="0 0.12 0.15"
+
+    material="
+      shader: flat;
+      transparent: true;
+      side: double;
+    "
+
+    animation__entrada="
+      property: position;
+      from: 0 -0.65 0.15;
+      to: 0 0.12 0.15;
+      dur: 1000;
+      easing: easeOutBack;
+    "
+
+    animation__flutuar="
+      property: position;
+      from: 0 0.12 0.15;
+      to: 0 0.17 0.15;
+      dur: 2000;
+      delay: 1100;
+      dir: alternate;
+      loop: true;
+      easing: easeInOutSine;
+    ">
+  </a-image>
+
+
+  <!-- TÍTULO -->
+
+  <a-text
+    value="COLONIA"
+    align="center"
+    width="2.2"
+    color="#FFD700"
+    position="0 0.82 0.20"
+
+    animation="
+      property: scale;
+      from: 0.5 0.5 0.5;
+      to: 1 1 1;
+      dur: 600;
+      delay: 750;
+      easing: easeOutBack;
+    ">
+  </a-text>
+
+
+  <!-- NOME DO MONUMENTO -->
+
+  <a-text
+    value="CATEDRAL DE COLONIA"
+    align="center"
+    width="1.55"
+    color="#FFD700"
+    font="https://cdn.aframe.io/fonts/Roboto-msdf.json"
+    position="0 -0.58 0.20">
+  </a-text>
+
+
+  <!-- INFORMAÇÃO -->
+
+  <a-text
+    value="UM DOS MONUMENTOS GOTICOS MAIS FAMOSOS DA ALEMANHA."
+    align="center"
+    width="1.20"
+    color="#FFFFFF"
+    position="0 -0.69 0.20">
+  </a-text>
+
+</a-entity>
+
+ <!-- =====================================================
+     TARGET 4 - SAXÔNIA-ANHALT
+     CASTELO DE WERNIGERODE
+     ===================================================== -->
+
+<a-entity mindar-image-target="targetIndex: 4">
+
+  <!-- CASTELO -->
+
+  <a-image
+    src="#img-saxonia"
+
+    width="1.30"
+    height="0.88"
+
+    position="0 0.10 0.15"
+
+    material="
+      shader: flat;
+      transparent: true;
+      side: double;
+    "
+
+    animation__entrada="
+      property: position;
+      from: 0 -0.50 0.15;
+      to: 0 0.10 0.15;
+      dur: 1000;
+      easing: easeOutBack;
+    "
+
+    animation__flutuar="
+      property: position;
+      from: 0 0.10 0.15;
+      to: 0 0.15 0.15;
+      dur: 2000;
+      delay: 1100;
+      dir: alternate;
+      loop: true;
+      easing: easeInOutSine;
+    ">
+  </a-image>
+
+
+  <!-- TÍTULO -->
+
+  <a-text
+    value="SAXONIA-ANHALT"
+    align="center"
+    width="2.0"
+    color="#FFD700"
+    position="0 0.66 0.20"
+
+    animation="
+      property: scale;
+      from: 0.5 0.5 0.5;
+      to: 1 1 1;
+      dur: 600;
+      delay: 750;
+      easing: easeOutBack;
+    ">
+  </a-text>
+
+
+  <!-- NOME DO MONUMENTO -->
+
+  <a-text
+    value="CASTELO DE WERNIGERODE"
+    align="center"
+    width="1.65"
+    color="#FFD700"
+    position="0 -0.47 0.20">
+  </a-text>
+
+
+  <!-- INFORMAÇÃO -->
+
+  <a-text
+    value="UM DOS CASTELOS MAIS MARCANTES DA REGIAO."
+    align="center"
+    width="1.20"
+    color="#FFFFFF"
+    position="0 -0.58 0.20">
+  </a-text>
+
+</a-entity>
+
+
+
+ <!-- =====================================================
+     TARGET 5 - BADEN-WÜRTTEMBERG
+     CASTELO DE HEIDELBERG
+     ===================================================== -->
+
+<a-entity mindar-image-target="targetIndex: 5">
+
+  <!-- CASTELO -->
+
+  <a-image
+    src="#img-heidelberg"
+
+    width="1.40"
+    height="0.88"
+
+    position="0 0.10 0.15"
+
+    material="
+      shader: flat;
+      transparent: true;
+      side: double;
+    "
+
+    animation__entrada="
+      property: position;
+      from: 0 -0.50 0.15;
+      to: 0 0.10 0.15;
+      dur: 1000;
+      easing: easeOutBack;
+    "
+
+    animation__flutuar="
+      property: position;
+      from: 0 0.10 0.15;
+      to: 0 0.15 0.15;
+      dur: 2000;
+      delay: 1100;
+      dir: alternate;
+      loop: true;
+      easing: easeInOutSine;
+    ">
+  </a-image>
+
+
+  <!-- TÍTULO -->
+
+  <a-text
+    value="BADEN-WURTTEMBERG"
+    align="center"
+    width="2.0"
+    color="#FFD700"
+    position="0 0.67 0.20"
+
+    animation="
+      property: scale;
+      from: 0.5 0.5 0.5;
+      to: 1 1 1;
+      dur: 600;
+      delay: 750;
+      easing: easeOutBack;
+    ">
+  </a-text>
+
+
+  <!-- NOME DO MONUMENTO -->
+
+  <a-text
+    value="CASTELO DE HEIDELBERG"
+    align="center"
+    width="1.70"
+    color="#FFD700"
+    position="0 -0.48 0.20">
+  </a-text>
+
+
+  <!-- INFORMAÇÃO -->
+
+  <a-text
+    value="UM DOS CASTELOS MAIS FAMOSOS E VISITADOS DA ALEMANHA."
+    align="center"
+    width="1.20"
+    color="#FFFFFF"
+    position="0 -0.59 0.20">
+  </a-text>
+
+</a-entity>
 
 
   <!-- =====================================================
-       TARGET 4
-       SAXÔNIA-ANHALT
-       ===================================================== -->
+     TARGET 6 - MUNIQUE
+     MARIENPLATZ / NEUES RATHAUS
+     ===================================================== -->
 
-  <a-entity mindar-image-target="targetIndex: 4">
+<a-entity mindar-image-target="targetIndex: 6">
 
-    <a-plane
-      width="1"
-      height="0.40"
-      color="#111111"
-      opacity="0.90">
-    </a-plane>
+  <!-- NEUES RATHAUS -->
 
-    <a-text
-      value="4 - SAXONIA-ANHALT"
-      align="center"
-      width="1.7"
-      color="#FFD700"
-      position="0 0 0.01">
-    </a-text>
+  <a-image
+    src="#img-munique"
 
-  </a-entity>
+    width="1.15"
+    height="1.15"
 
+    position="0 0.10 0.15"
 
+    material="
+      shader: flat;
+      transparent: true;
+      side: double;
+    "
 
-  <!-- =====================================================
-       TARGET 5
-       BADEN-WÜRTTEMBERG
-       ===================================================== -->
+    animation__entrada="
+      property: position;
+      from: 0 -0.65 0.15;
+      to: 0 0.10 0.15;
+      dur: 1000;
+      easing: easeOutBack;
+    "
 
-  <a-entity mindar-image-target="targetIndex: 5">
-
-    <a-plane
-      width="1"
-      height="0.40"
-      color="#111111"
-      opacity="0.90">
-    </a-plane>
-
-    <a-text
-      value="5 - BADEN-WURTTEMBERG"
-      align="center"
-      width="1.55"
-      color="#FFFFFF"
-      position="0 0 0.01">
-    </a-text>
-
-  </a-entity>
+    animation__flutuar="
+      property: position;
+      from: 0 0.10 0.15;
+      to: 0 0.15 0.15;
+      dur: 2000;
+      delay: 1100;
+      dir: alternate;
+      loop: true;
+      easing: easeInOutSine;
+    ">
+  </a-image>
 
 
+  <!-- TÍTULO -->
 
-  <!-- =====================================================
-       TARGET 6
-       MUNIQUE
-       ===================================================== -->
+  <a-text
+    value="MUNIQUE"
+    align="center"
+    width="2.2"
+    color="#FFD700"
+    position="0 0.79 0.20"
 
-  <a-entity mindar-image-target="targetIndex: 6">
-
-    <a-plane
-      width="1"
-      height="0.40"
-      color="#111111"
-      opacity="0.90">
-    </a-plane>
-
-    <a-text
-      value="6 - MUNIQUE"
-      align="center"
-      width="2"
-      color="#FFD700"
-      position="0 0 0.01">
-    </a-text>
-
-  </a-entity>
+    animation="
+      property: scale;
+      from: 0.5 0.5 0.5;
+      to: 1 1 1;
+      dur: 600;
+      delay: 750;
+      easing: easeOutBack;
+    ">
+  </a-text>
 
 
+  <!-- NOME DO LOCAL -->
 
-  <!-- =====================================================
-       TARGET 7
-       HAMBURGO
-       ===================================================== -->
+  <a-text
+    value="MARIENPLATZ - NEUES RATHAUS"
+    align="center"
+    width="1.65"
+    color="#FFD700"
+    position="0 -0.56 0.20">
+  </a-text>
 
-  <a-entity mindar-image-target="targetIndex: 7">
 
-    <a-plane
-      width="1"
-      height="0.40"
-      color="#111111"
-      opacity="0.90">
-    </a-plane>
+  <!-- INFORMAÇÃO -->
 
-    <a-text
-      value="7 - HAMBURGO"
-      align="center"
-      width="2"
-      color="#FFFFFF"
-      position="0 0 0.01">
-    </a-text>
+  <a-text
+    value="UM DOS PRINCIPAIS CARTOES-POSTAIS DE MUNIQUE."
+    align="center"
+    width="1.20"
+    color="#FFFFFF"
+    position="0 -0.67 0.20">
+  </a-text>
 
-  </a-entity>
+</a-entity>
 
+
+
+ <!-- =====================================================
+     TARGET 7 - HAMBURGO
+     IGREJA DE SÃO MIGUEL
+     ===================================================== -->
+
+<a-entity mindar-image-target="targetIndex: 7">
+
+  <!-- IGREJA DE SÃO MIGUEL -->
+
+  <a-image
+    src="#img-hamburgo"
+
+    width="0.92"
+    height="1.30"
+
+    position="0 0.10 0.15"
+
+    material="
+      shader: flat;
+      transparent: true;
+      side: double;
+    "
+
+    animation__entrada="
+      property: position;
+      from: 0 -0.70 0.15;
+      to: 0 0.10 0.15;
+      dur: 1000;
+      easing: easeOutBack;
+    "
+
+    animation__flutuar="
+      property: position;
+      from: 0 0.10 0.15;
+      to: 0 0.15 0.15;
+      dur: 2000;
+      delay: 1100;
+      dir: alternate;
+      loop: true;
+      easing: easeInOutSine;
+    ">
+  </a-image>
+
+
+  <!-- TÍTULO -->
+
+  <a-text
+    value="HAMBURGO"
+    align="center"
+    width="2.2"
+    color="#FFD700"
+    position="0 0.86 0.20"
+
+    animation="
+      property: scale;
+      from: 0.5 0.5 0.5;
+      to: 1 1 1;
+      dur: 600;
+      delay: 750;
+      easing: easeOutBack;
+    ">
+  </a-text>
+
+
+  <!-- NOME DO MONUMENTO -->
+
+  <a-text
+    value="IGREJA DE SAO MIGUEL"
+    align="center"
+    width="1.70"
+    color="#FFD700"
+    position="0 -0.62 0.20">
+  </a-text>
+
+
+  <!-- INFORMAÇÃO -->
+
+  <a-text
+    value="UM DOS PRINCIPAIS SIMBOLOS DE HAMBURGO."
+    align="center"
+    width="1.20"
+    color="#FFFFFF"
+    position="0 -0.73 0.20">
+  </a-text>
+
+</a-entity>
 
 </a-scene>
 
