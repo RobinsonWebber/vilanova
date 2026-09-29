@@ -34,7 +34,7 @@
             1.10,
             0.66,
             32,
-            3
+            30
           );
 
         const position =
@@ -145,28 +145,21 @@
             (x + 0.55) / 1.10;
 
 
-          const onda =
+         const onda =
+          Math.sin(
+            x * 8 -
+            segundos * 3.5
+          )
+          * 0.045
+          * distanciaMastro;
 
-            Math.sin(
-              x * 11 -
-              segundos * 5
-            )
-
-            * 0.10
-
-            * distanciaMastro;
-
-
-          const detalhe =
-
-            Math.sin(
-              x * 20 -
-              segundos * 7
-            )
-
-            * 0.025
-
-            * distanciaMastro;
+        const detalhe =
+          Math.sin(
+            x * 14 -
+            segundos * 5
+          )
+          * 0.012
+          * distanciaMastro;
 
 
           position.setZ(
@@ -185,6 +178,47 @@
       }
 
     });
+
+  AFRAME.registerComponent('audio-alemao', {
+
+  init: function () {
+
+    const alvo = this.el;
+    const audio = document.querySelector('#audio-alemao');
+
+    let tocando = false;
+
+    alvo.addEventListener('targetFound', function () {
+
+      if (tocando) return;
+
+      audio.currentTime = 0;
+
+      audio.play()
+        .then(() => {
+          tocando = true;
+        })
+        .catch((erro) => {
+          console.log('Áudio bloqueado pelo navegador:', erro);
+        });
+
+    });
+
+    alvo.addEventListener('targetLost', function () {
+
+      audio.pause();
+      audio.currentTime = 0;
+      tocando = false;
+
+    });
+
+    audio.addEventListener('ended', function () {
+      tocando = false;
+    });
+
+  }
+
+  }); 
 
   </script>
 
@@ -250,6 +284,16 @@
       id="img-alemao"
       src="./alemao.png">
 
+      <img
+      id="img-berlim"
+      src="./berlim.png">
+
+      <audio
+        id="audio-alemao"
+        src="./alemao.mp3"
+        preload="auto">
+      </audio>
+      
   </a-assets>
 
 
@@ -308,7 +352,7 @@
       value="DEUTSCHLAND"
       align="center"
       width="1.6"
-      color="#FFFFFF"
+      color="#000000"
       position="0 -0.48 0.12">
     </a-text>
 
@@ -322,7 +366,8 @@
        MASCOTE / ALEMÃO
        ===================================================== -->
 
-  <a-entity mindar-image-target="targetIndex: 1">
+  <a-entity
+  mindar-image-target="targetIndex: 1" audio-alemao>
 
 
     <!--
@@ -411,29 +456,103 @@
 
 
   <!-- =====================================================
-       TARGET 2
-       BERLIM
-       ===================================================== -->
+     TARGET 2 - BERLIM
+     PORTÃO DE BRANDENBURGO
+     ===================================================== -->
 
-  <a-entity mindar-image-target="targetIndex: 2">
+<a-entity mindar-image-target="targetIndex: 2">
 
-    <a-plane
-      width="1"
-      height="0.40"
-      color="#111111"
-      opacity="0.90">
-    </a-plane>
+  <!-- PORTÃO -->
 
-    <a-text
-      value="2 - BERLIM"
-      align="center"
-      width="2"
-      color="#FFD700"
-      position="0 0 0.01">
-    </a-text>
+  <a-image
+    src="#img-berlim"
 
-  </a-entity>
+    width="1.35"
+    height="0.90"
 
+    position="0 0.10 0.15"
+
+    material="
+      shader: flat;
+      transparent: true;
+      side: double;
+    "
+
+    animation__entrada="
+      property: position;
+      from: 0 -0.45 0.15;
+      to: 0 0.10 0.15;
+      dur: 900;
+      easing: easeOutBack;
+    "
+
+    animation__flutuar="
+      property: position;
+      from: 0 0.10 0.15;
+      to: 0 0.15 0.15;
+      dur: 1800;
+      delay: 1000;
+      dir: alternate;
+      loop: true;
+      easing: easeInOutSine;
+    ">
+  </a-image>
+
+
+  <!-- TÍTULO -->
+
+  <a-text
+    value="BERLIM"
+
+    align="center"
+
+    width="2.2"
+
+    color="#FFD700"
+
+    position="0 0.72 0.20"
+
+    animation="
+      property: scale;
+      from: 0.5 0.5 0.5;
+      to: 1 1 1;
+      dur: 600;
+      delay: 700;
+      easing: easeOutBack;
+    ">
+  </a-text>
+
+
+  <!-- SUBTÍTULO -->
+
+  <a-text
+    value="PORTAO DE BRANDENBURGO"
+
+    align="center"
+
+    width="1.55"
+
+    color="#FFFFFF"
+
+    position="0 -0.48 0.20">
+  </a-text>
+
+
+  <!-- INFORMAÇÃO -->
+
+  <a-text
+    value="UM DOS PRINCIPAIS SIMBOLOS DA CAPITAL ALEMA."
+
+    align="center"
+
+    width="1.25"
+
+    color="#FFFFFF"
+
+    position="0 -0.59 0.20">
+  </a-text>
+
+</a-entity>
 
 
   <!-- =====================================================
