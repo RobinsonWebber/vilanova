@@ -220,8 +220,10 @@
 
   }); 
 
+  
   </script>
 
+ 
 
   <style>
 
@@ -246,6 +248,160 @@
 
     }
 
+    /* =========================================
+   TELA INICIAL
+   ========================================= */
+
+#tela-inicial {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background:
+    linear-gradient(
+      180deg,
+      #000000 0%,
+      #000000 33%,
+      #dd0000 33%,
+      #dd0000 66%,
+      #ffcc00 66%,
+      #ffcc00 100%
+    );
+
+  font-family: Arial, sans-serif;
+
+  transition:
+    opacity 0.6s ease,
+    visibility 0.6s ease;
+}
+
+#tela-inicial.ocultar {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+#painel-inicial {
+  width: min(86%, 420px);
+  padding: 32px 24px;
+
+  background: rgba(255,255,255,0.94);
+
+  border-radius: 22px;
+
+  text-align: center;
+
+  box-shadow:
+    0 12px 40px rgba(0,0,0,0.40);
+}
+
+#bandeira-inicial {
+  font-size: 52px;
+  margin-bottom: 5px;
+}
+
+#painel-inicial h1 {
+  margin: 0;
+
+  color: #111;
+
+  font-size: 32px;
+  font-weight: 800;
+}
+
+#painel-inicial h2 {
+  margin: 3px 0 18px;
+
+  color: #dd0000;
+
+  font-size: 20px;
+}
+
+#painel-inicial p {
+  color: #333;
+
+  font-size: 16px;
+  line-height: 1.45;
+}
+
+#btn-iniciar {
+  width: 100%;
+
+  margin-top: 15px;
+  padding: 16px 20px;
+
+  border: none;
+  border-radius: 14px;
+
+  background: #111;
+  color: #ffcc00;
+
+  font-size: 18px;
+  font-weight: bold;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 5px 12px rgba(0,0,0,0.25);
+}
+
+#btn-iniciar:active {
+  transform: scale(0.97);
+}
+
+#instrucao-ar {
+  position: fixed;
+
+  top: 18px;
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  z-index: 100;
+
+  padding: 9px 16px;
+
+  background: rgba(0,0,0,0.70);
+  color: white;
+
+  border-radius: 20px;
+
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+
+  pointer-events: none;
+
+  opacity: 0;
+
+  transition: opacity 0.5s ease;
+}
+
+#instrucao-ar.mostrar {
+  opacity: 1;
+}
+ /* =========================================
+   FIM DA TELA INICIAL
+   ========================================= */
+
+  .bncc {
+  margin-top: 14px;
+  padding: 10px 12px;
+
+  background: #f2f2f2;
+  border-left: 4px solid #ffcc00;
+  border-radius: 8px;
+
+  color: #333;
+
+  font-size: 12px;
+  line-height: 1.35;
+  text-align: left;
+}
+
   </style>
 
 </head>
@@ -253,6 +409,148 @@
 
 <body>
 
+  <!-- =========================================
+     TELA INICIAL
+     ========================================= -->
+
+<div id="tela-inicial">
+
+  <div id="painel-inicial">
+
+    <div id="bandeira-inicial">
+      🇩🇪
+    </div>
+
+    <h1>ALEMANHA</h1>
+
+    <h2>REALIDADE AUMENTADA</h2>
+
+    <p>
+      Explore lugares, monumentos e
+      símbolos da Alemanha através
+      da Realidade Aumentada.
+    </p>
+
+    <button id="btn-iniciar">
+      INICIAR EXPERIÊNCIA
+    </button>
+
+    <p style="
+      font-size:12px;
+      margin-top:18px;
+      opacity:0.65;
+    ">
+      Escola Vila Nova • 2026 <br>
+      Desenvolvido por professor Robinson<br>
+      </p>
+      <div class="bncc">
+        <strong>BNCC • Pensamento Computacional</strong><br>
+        Representar objetos e situações por meio de diferentes
+        formas de representação e modelos.
+      </div>
+
+  </div>
+
+</div>
+
+
+<!-- INSTRUÇÃO DURANTE A EXPERIÊNCIA -->
+
+<div id="instrucao-ar">
+  📷 Aponte a câmera para os pontos do mapa
+</div>
+<!-- =========================================
+  FIM TELA INICIAL
+     ========================================= -->
+<script>
+
+const botao = document.querySelector('#btn-iniciar');
+const tela = document.querySelector('#tela-inicial');
+const instrucao = document.querySelector('#instrucao-ar');
+
+botao.addEventListener('click', async function () {
+
+  // Evita clique duplo
+  botao.disabled = true;
+  botao.innerText = 'INICIANDO...';
+
+  /*
+   * Libera o áudio através da interação
+   * direta do usuário.
+   */
+  const audio = document.querySelector('#audio-alemao');
+
+  if (audio) {
+
+    try {
+
+      audio.volume = 0;
+
+      await audio.play();
+
+      audio.pause();
+      audio.currentTime = 0;
+      audio.volume = 1;
+
+    } catch (erro) {
+
+      console.log('Liberação de áudio:', erro);
+
+      audio.volume = 1;
+
+    }
+
+  }
+
+
+  /*
+   * Inicia o MindAR / câmera.
+   */
+
+  const scene = document.querySelector('a-scene');
+
+  try {
+
+    const mindarSystem =
+      scene.systems['mindar-image-system'];
+
+    await mindarSystem.start();
+
+
+    /*
+     * Câmera iniciou com sucesso.
+     * Agora retiramos a abertura.
+     */
+
+    tela.classList.add('ocultar');
+
+    instrucao.classList.add('mostrar');
+
+
+    setTimeout(function () {
+
+      instrucao.classList.remove('mostrar');
+
+    }, 5000);
+
+
+  } catch (erro) {
+
+    console.error(
+      'Erro ao iniciar a experiência:',
+      erro
+    );
+
+    botao.disabled = false;
+
+    botao.innerText =
+      'TENTAR NOVAMENTE';
+
+  }
+
+});
+
+</script>
 
 <a-scene
 
