@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Missão Ética Digital - 4º Ano</title>
+  <style>
+    :root{--azul:#1769aa;--azul2:#0d47a1;--amarelo:#ffd54f;--verde:#2e7d32;--vermelho:#c62828;--fundo:#eef7ff;--texto:#172033}
+    *{box-sizing:border-box} body{margin:0;font-family:Arial,Helvetica,sans-serif;color:var(--texto);background:linear-gradient(135deg,#dff3ff,#fff8d8);min-height:100vh}
+    button,input,textarea{font:inherit}.app{width:min(920px,94%);margin:22px auto}.topo{background:white;border:4px solid var(--azul2);border-radius:22px;padding:18px 22px;box-shadow:0 8px 0 rgba(13,71,161,.18)}
+    .escola{text-align:center;font-size:.93rem;line-height:1.35}.escola strong{display:block;font-size:1.25rem}.titulo{display:flex;align-items:center;justify-content:center;gap:12px;margin:18px 0 6px;font-size:clamp(1.8rem,5vw,3rem);color:var(--azul2);text-align:center}.icone{font-size:2.6rem}.sub{text-align:center;font-weight:bold;margin:0;color:#42536b}
+    .painel{margin-top:18px;background:#fff;border:3px solid #92bde3;border-radius:20px;padding:24px;box-shadow:0 8px 24px rgba(20,70,110,.15)}
+    .campos{display:grid;grid-template-columns:2fr 1fr;gap:12px}.campo label{display:block;font-weight:bold;margin-bottom:6px}.campo input{width:100%;padding:12px;border:2px solid #9eb5c9;border-radius:10px}
+    .regras{background:#fff7d1;border-left:7px solid #f4b400;padding:14px 18px;border-radius:10px;margin:18px 0}.regras li{margin:7px 0}
+    .btn{border:0;border-radius:12px;padding:13px 20px;font-weight:bold;cursor:pointer;transition:.15s;box-shadow:0 4px 0 rgba(0,0,0,.18)}.btn:hover{transform:translateY(-2px)}.btn:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(0,0,0,.18)}
+    .primario{background:var(--azul);color:white}.secundario{background:#e8eef4;color:#24384b}.sucesso{background:var(--verde);color:#fff}.acoes{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+    .barra-area{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;font-weight:bold}.barra{height:14px;background:#d7e3ee;border-radius:20px;overflow:hidden;flex:1}.barra span{display:block;height:100%;width:0;background:linear-gradient(90deg,#4caf50,#ffd54f);transition:.35s}
+    .categoria{display:inline-block;background:#e3f2fd;color:#0d47a1;border:2px solid #90caf9;border-radius:30px;padding:6px 12px;font-weight:bold}.situacao{font-size:1.28rem;line-height:1.45;background:#f7fbff;border:2px dashed #7aa9d1;border-radius:14px;padding:18px;margin:16px 0}
+    .opcoes{display:grid;gap:11px}.opcao{text-align:left;background:white;border:3px solid #c7d7e5;border-radius:14px;padding:14px;cursor:pointer;font-weight:bold}.opcao:hover{border-color:var(--azul);background:#f1f8ff}.opcao.selecionada{border-color:var(--azul2);background:#dbeeff}.opcao.certa{border-color:var(--verde);background:#e6f6e8}.opcao.errada{border-color:var(--vermelho);background:#ffe7e7}
+    .justifica{margin-top:16px}.justifica label{display:block;font-weight:bold;margin-bottom:7px}.justifica textarea{width:100%;min-height:85px;padding:12px;border:2px solid #9eb5c9;border-radius:10px;resize:vertical}.feedback{display:none;margin-top:16px;padding:14px;border-radius:12px;font-weight:bold;line-height:1.4}.feedback.ok{display:block;background:#e5f5e7;color:#1b5e20;border:2px solid #66bb6a}.feedback.nao{display:block;background:#ffebee;color:#8e1c1c;border:2px solid #ef9a9a}
+    .resultado{text-align:center}.nota{font-size:4rem;font-weight:bold;color:var(--azul2);margin:10px}.medalha{font-size:4rem}.resumo{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:20px 0}.resumo div{background:#eef7ff;padding:14px;border-radius:12px;border:2px solid #b6d4ed}.registro{text-align:left;background:#f7f7f7;border:2px solid #ccc;border-radius:12px;padding:14px;margin-top:14px}.registro ol{padding-left:22px}.registro li{margin:8px 0}
+    .oculto{display:none!important}.rodape{text-align:center;color:#5f6c78;margin:16px;font-size:.85rem}@media(max-width:600px){.campos{grid-template-columns:1fr}.painel{padding:16px}.resumo{grid-template-columns:1fr}.titulo{align-items:flex-start}.situacao{font-size:1.12rem}}
+    @media print{body{background:white}.app{width:100%;margin:0}.topo,.painel{box-shadow:none}.btn,.regras,.barra-area{display:none!important}.registro{border:1px solid #000}.resultado{color:#000}}
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topo">
+      <div class="escola"><strong>E.M.E.B. VILA NOVA</strong>Rua Onze Horas, s/n, Rosa do Mar, Passo de Torres - SC<br>Disciplina: Informática - Prof. Robinson</div>
+      <h1 class="titulo"><span class="icone">🕵️‍♀️</span> MISSÃO ÉTICA DIGITAL <span class="icone">🛡️</span></h1>
+      <p class="sub">Trabalho avaliativo - 4º ano</p>
+    </header>
+
+    <section id="inicio" class="painel">
+      <div class="campos">
+        <div class="campo"><label for="nome">Nome do estudante</label><input id="nome" autocomplete="name" placeholder="Digite seu nome"></div>
+        <div class="campo"><label for="turma">Turma</label><input id="turma" placeholder="Ex.: 41"></div>
+      </div>
+      <div class="regras"><strong>Como jogar:</strong><ul><li>Você receberá cinco situações digitais.</li><li>Escolha a atitude mais ética e segura.</li><li>Explique sua decisão em uma frase.</li><li>Cada missão vale 2 pontos: 1 pela escolha e 1 pela justificativa.</li></ul></div>
+      <div class="acoes"><button class="btn primario" id="iniciar">INICIAR MISSÃO</button></div>
+    </section>
+
+    <section id="jogo" class="painel oculto">
+      <div class="barra-area"><span id="progressoTexto">Missão 1 de 5</span><div class="barra"><span id="progressoBarra"></span></div><span id="pontosTopo">0 pontos</span></div>
+      <span id="categoria" class="categoria"></span>
+      <div id="situacao" class="situacao"></div>
+      <div id="opcoes" class="opcoes"></div>
+      <div class="justifica"><label for="justificativa">Explique por que escolheu essa atitude:</label><textarea id="justificativa" maxlength="220" placeholder="Escreva uma frase completa..."></textarea></div>
+      <div id="feedback" class="feedback"></div>
+      <div class="acoes"><button class="btn primario" id="confirmar">CONFIRMAR RESPOSTA</button><button class="btn sucesso oculto" id="proxima">PRÓXIMA MISSÃO</button></div>
+    </section>
+
+    <section id="fim" class="painel resultado oculto">
+      <div id="medalha" class="medalha">🏆</div><h2>MISSÃO CONCLUÍDA!</h2><p id="alunoFinal"></p><div id="nota" class="nota">0,0</div><p><strong>Nota na Missão Ética Digital</strong><br><span id="pesoFinal">Contribuição no trabalho: 0,0 de 5,0 pontos</span></p>
+      <div class="resumo"><div><strong id="acertosFinal">0/5</strong><br>decisões corretas</div><div><strong id="justFinal">0/5</strong><br>justificativas</div><div><strong id="totalFinal">0/10</strong><br>pontos totais</div></div>
+      <p id="mensagemFinal"></p><div id="registro" class="registro"></div>
+      <div class="acoes"><button class="btn primario" onclick="window.print()">IMPRIMIR RESULTADO</button><button class="btn secundario" id="reiniciar">JOGAR NOVAMENTE</button></div>
+    </section>
+    <p class="rodape">Habilidades: EF04CO07 e EF04CO08</p>
+  </main>
+
+  <script>
+    const banco = [
+      {cat:'SEGURANÇA',sit:'Você recebe uma mensagem dizendo que ganhou 1.000 moedas em um jogo. Para receber, deve clicar em um link e informar sua senha.',ops:['Clicar rapidamente antes que o prêmio acabe.','Pedir ajuda a um adulto, não clicar e nunca informar a senha.','Enviar a senha e depois trocá-la.'],certa:1,exp:'Links de prêmios podem ser golpes. Senhas são pessoais e não devem ser informadas.'},
+      {cat:'PRIVACIDADE',sit:'Você tirou uma foto engraçada de um colega durante o recreio e quer publicar no grupo da turma.',ops:['Publicar, porque a foto foi tirada pelo seu celular.','Perguntar ao colega se ele autoriza a publicação.','Publicar e apagar somente se alguém reclamar.'],certa:1,exp:'A imagem pertence também à pessoa fotografada; é preciso pedir autorização antes de compartilhar.'},
+      {cat:'HONESTIDADE',sit:'Você encontrou uma imagem perfeita para um trabalho escolar em um site.',ops:['Usar a imagem e informar de onde ela foi retirada.','Dizer que você mesmo criou a imagem.','Apagar o nome do autor para o trabalho ficar mais bonito.'],certa:0,exp:'Indicar a fonte reconhece o trabalho do autor e demonstra honestidade.'},
+      {cat:'RESPONSABILIDADE',sit:'Chegou ao grupo uma notícia impressionante, mas você não sabe quem escreveu nem de onde ela veio.',ops:['Compartilhar logo para avisar todo mundo.','Acrescentar “não sei se é verdade” e compartilhar.','Verificar a fonte e confirmar a informação antes de compartilhar.'],certa:2,exp:'Informações devem ser verificadas em fontes confiáveis antes de serem compartilhadas.'},
+      {cat:'RESPEITO',sit:'Durante uma partida online, outro jogador cometeu um erro e sua equipe perdeu.',ops:['Ofender o jogador para ele aprender.','Tratá-lo com respeito e lembrar que todos podem errar.','Publicar uma mensagem zombando dele.'],certa:1,exp:'O respeito também deve existir nos jogos, grupos e demais ambientes digitais.'},
+      {cat:'PRIVACIDADE',sit:'Um aplicativo desconhecido pede seu nome completo, endereço, escola e telefone para liberar uma fase do jogo.',ops:['Preencher tudo para continuar jogando.','Inventar dados de outra pessoa.','Não fornecer os dados e chamar um adulto responsável.'],certa:2,exp:'Dados pessoais precisam ser protegidos e só devem ser fornecidos com orientação de um responsável.'},
+      {cat:'SEGURANÇA',sit:'Um amigo pede sua senha para entrar na sua conta e conseguir um item para você.',ops:['Entregar porque ele é seu amigo.','Não compartilhar a senha com ninguém.','Enviar somente parte da senha.'],certa:1,exp:'Senhas são pessoais e secretas, inclusive entre amigos.'},
+      {cat:'RESPONSABILIDADE',sit:'Você percebe que enviou ao grupo uma informação que depois descobriu ser falsa.',ops:['Fingir que não percebeu.','Avisar que a informação estava errada e pedir que não a compartilhem.','Apagar apenas do seu celular.'],certa:1,exp:'É responsável corrigir o erro e alertar as pessoas que receberam a informação falsa.'},
+      {cat:'RESPEITO',sit:'Dois colegas têm opiniões diferentes sobre um vídeo. Um deles começa a escrever ofensas no grupo.',ops:['Entrar na discussão e escolher um lado.','Responder com mais ofensas.','Não participar das ofensas e incentivar uma conversa respeitosa.'],certa:2,exp:'É possível discordar sem ofender; o diálogo deve ser respeitoso também na internet.'},
+      {cat:'CONFIABILIDADE',sit:'Dois sites apresentam informações diferentes sobre o mesmo assunto do trabalho.',ops:['Usar o primeiro resultado da pesquisa.','Comparar as fontes, verificar autor e data e procurar um site confiável.','Escolher a informação mais interessante.'],certa:1,exp:'Autor, data, instituição responsável e comparação entre fontes ajudam a avaliar a confiabilidade.'}
+    ];
+    const $=id=>document.getElementById(id); let missoes=[],atual=0,pontos=0,acertos=0,justificativas=0,selecionada=null,respostas=[];
+    function embaralhar(a){return [...a].sort(()=>Math.random()-.5)}
+    function iniciar(){if(!$('nome').value.trim()){alert('Digite o nome do estudante.');$('nome').focus();return} missoes=embaralhar(banco).slice(0,5);atual=pontos=acertos=justificativas=0;respostas=[];$('inicio').classList.add('oculto');$('fim').classList.add('oculto');$('jogo').classList.remove('oculto');mostrar()}
+    function mostrar(){const m=missoes[atual];selecionada=null;$('categoria').textContent=m.cat;$('situacao').textContent=m.sit;$('opcoes').innerHTML='';m.ops.forEach((op,i)=>{const b=document.createElement('button');b.className='opcao';b.textContent=String.fromCharCode(65+i)+') '+op;b.onclick=()=>{document.querySelectorAll('.opcao').forEach(x=>x.classList.remove('selecionada'));b.classList.add('selecionada');selecionada=i};$('opcoes').appendChild(b)});$('justificativa').value='';$('justificativa').disabled=false;$('feedback').className='feedback';$('feedback').textContent='';$('confirmar').classList.remove('oculto');$('proxima').classList.add('oculto');$('progressoTexto').textContent=`Missão ${atual+1} de 5`;$('progressoBarra').style.width=`${atual*20}%`;$('pontosTopo').textContent=`${pontos} pontos`}
+    function confirmar(){const texto=$('justificativa').value.trim();if(selecionada===null){alert('Escolha uma das atitudes.');return}if(texto.length<12){alert('Escreva uma justificativa com pelo menos uma frase curta.');$('justificativa').focus();return}const m=missoes[atual],ok=selecionada===m.certa;let ganho=0;if(ok){ganho++;acertos++}const palavras=texto.split(/\s+/).filter(Boolean).length;const justOk=palavras>=5;if(justOk){ganho++;justificativas++}pontos+=ganho;respostas.push({categoria:m.cat,situacao:m.sit,escolha:m.ops[selecionada],correta:ok,justificativa:texto,pontos:ganho});document.querySelectorAll('.opcao').forEach((b,i)=>{b.disabled=true;if(i===m.certa)b.classList.add('certa');else if(i===selecionada)b.classList.add('errada')});$('justificativa').disabled=true;$('feedback').className='feedback '+(ok?'ok':'nao');$('feedback').innerHTML=(ok?'✅ Boa decisão! ':'⚠️ Atenção! ')+m.exp+(justOk?' Sua justificativa foi registrada.':' Sua justificativa ficou muito curta.');$('confirmar').classList.add('oculto');$('proxima').classList.remove('oculto');$('pontosTopo').textContent=`${pontos} pontos`;}
+    function proxima(){atual++;if(atual<5)mostrar();else finalizar()}
+    function finalizar(){ $('jogo').classList.add('oculto');$('fim').classList.remove('oculto');$('progressoBarra').style.width='100%';const nota=pontos.toFixed(1).replace('.',',');$('nota').textContent=nota;$('pesoFinal').textContent=`Contribuição no trabalho: ${(pontos/2).toFixed(1).replace('.',',')} de 5,0 pontos`;$('alunoFinal').textContent=`${$('nome').value.trim()} - Turma ${$('turma').value.trim()||'____'}`;$('acertosFinal').textContent=`${acertos}/5`;$('justFinal').textContent=`${justificativas}/5`;$('totalFinal').textContent=`${pontos}/10`;$('medalha').textContent=pontos>=9?'🏆':pontos>=7?'🥇':pontos>=5?'🥈':'🧭';$('mensagemFinal').textContent=pontos>=9?'Excelente! Você é um Guardião da Ética Digital!':pontos>=7?'Muito bem! Suas decisões digitais foram responsáveis.':pontos>=5?'Bom caminho! Reveja as missões em que teve dúvida.':'Continue treinando para navegar com segurança e responsabilidade.';$('registro').innerHTML='<strong>Registro das missões:</strong><ol>'+respostas.map(r=>`<li><b>${r.categoria}</b> — ${r.correta?'decisão adequada':'precisa revisar'} (${r.pontos}/2)</li>`).join('')+'</ol><small>A pontuação da justificativa considera o preenchimento mínimo. O professor poderá revisar a qualidade da resposta.</small>'}
+    $('iniciar').addEventListener('click',iniciar);$('confirmar').addEventListener('click',confirmar);$('proxima').addEventListener('click',proxima);$('reiniciar').addEventListener('click',()=>{location.reload()});
+  </script>
+</body>
+</html>
