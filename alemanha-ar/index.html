@@ -764,59 +764,49 @@ botao.addEventListener('click', async function () {
      TARGET 2 - BERLIM
      PORTÃO DE BRANDENBURGO
      ===================================================== -->
-
 <a-entity mindar-image-target="targetIndex: 2">
 
-  <!-- PORTÃO -->
+  <!-- PORTÃO DE BRANDENBURGO -->
+  <a-entity position="0 0.10 0.15">
 
-  <a-image
-    src="#img-berlim"
+    <!-- ENTRADA -->
+    <a-entity
+      animation__entrada="
+        property: position;
+        from: 0 -0.55 0;
+        to: 0 0 0;
+        dur: 900;
+        easing: easeOutBack;
+      ">
 
-    width="1.35"
-    height="0.90"
+      <!-- FLUTUAÇÃO -->
+      <a-image
+        src="#img-berlim"
+        width="1.35"
+        height="0.90"
+        position="0 0 0"
+        material="shader: flat; transparent: true; side: double;"
+        animation__flutuar="
+          property: position;
+          from: 0 0 0;
+          to: 0 0.05 0;
+          dur: 1800;
+          dir: alternate;
+          loop: true;
+          easing: easeInOutSine;
+        ">
+      </a-image>
 
-    position="0 0.10 0.15"
-
-    material="
-      shader: flat;
-      transparent: true;
-      side: double;
-    "
-
-    animation__entrada="
-      property: position;
-      from: 0 -0.45 0.15;
-      to: 0 0.10 0.15;
-      dur: 900;
-      easing: easeOutBack;
-    "
-
-    animation__flutuar="
-      property: position;
-      from: 0 0.10 0.15;
-      to: 0 0.15 0.15;
-      dur: 1800;
-      delay: 1000;
-      dir: alternate;
-      loop: true;
-      easing: easeInOutSine;
-    ">
-  </a-image>
-
+    </a-entity>
+  </a-entity>
 
   <!-- TÍTULO -->
-
   <a-text
     value="BERLIM"
-
     align="center"
-
     width="2.2"
-
     color="#FFD700"
-
     position="0 0.72 0.20"
-
     animation="
       property: scale;
       from: 0.5 0.5 0.5;
@@ -827,34 +817,22 @@ botao.addEventListener('click', async function () {
     ">
   </a-text>
 
-
   <!-- SUBTÍTULO -->
-
   <a-text
     value="PORTAO DE BRANDENBURGO"
-
     align="center"
-
     width="1.55"
-
     color="#FFD700"
     font="https://cdn.aframe.io/fonts/Roboto-msdf.json"
-
     position="0 -0.48 0.20">
   </a-text>
 
-
   <!-- INFORMAÇÃO -->
-
   <a-text
     value="UM DOS PRINCIPAIS SIMBOLOS DA CAPITAL ALEMA."
-
     align="center"
-
     width="1.25"
-
     color="#FFFFFF"
-
     position="0 -0.59 0.20">
   </a-text>
 
